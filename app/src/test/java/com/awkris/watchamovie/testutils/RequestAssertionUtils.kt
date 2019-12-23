@@ -7,20 +7,21 @@ import org.junit.Assert.assertEquals
 class RequestAssertionUtils(recordedRequest: RecordedRequest) {
     private val sanitizer = UrlQuerySanitizer()
     private val request = recordedRequest
-    private val queryParams: Map<String, String>
+    private val queryParams = hashMapOf<String, String>()
 
     enum class Method(var text: String) {
         GET("GET"), POST("POST"), DELETE("DELETE"), PUT("PUT");
     }
 
     init {
-        sanitizer.allowUnregisteredParamaters = true
-        sanitizer.unregisteredParameterValueSanitizer = UrlQuerySanitizer.getAmpLegal()
-        sanitizer.parseUrl(recordedRequest.path)
-        sanitizer.parseQuery(recordedRequest.body.readUtf8())
-        queryParams = HashMap()
-        for (param in sanitizer.parameterList) {
-            queryParams[param.mParameter] = param.mValue
+        sanitizer.apply {
+            allowUnregisteredParamaters = true
+            unregisteredParameterValueSanitizer = UrlQuerySanitizer.getSpaceLegal()
+            parseUrl(recordedRequest.path)
+            for (param in parameterList) {
+                queryParams[param.mParameter] = param.mValue
+            }
+            parseQuery(recordedRequest.body.readUtf8())
         }
     }
 
@@ -83,7 +84,7 @@ class RequestAssertionUtils(recordedRequest: RecordedRequest) {
     }
 
     fun assertTotalQueryParams(expectedTotalQueryParams: Int) {
-        assertEquals(expectedTotalQueryParams.toLong(), queryParams.size.toLong())
+        assertEquals(expectedTotalQueryParams, queryParams.size)
     }
 
     fun assertNoQueryParam() {

@@ -26,6 +26,6 @@ class CloudMovieDataStore @Inject constructor(private val movieDbApi: MovieDbApi
     }
 
     companion object {
-        private const val KEY = BuildConfig.moviedbkey
+        const val KEY = BuildConfig.moviedbkey
     }
 }

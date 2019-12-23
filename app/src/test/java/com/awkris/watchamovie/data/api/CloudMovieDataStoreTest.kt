@@ -35,8 +35,11 @@ class CloudMovieDataStoreTest : CloudDataStoreTest() {
                 RequestAssertionUtils.Method.GET,
                 UrlConstants.NOW_PLAYING
             )
-//            assertTotalQueryParams(1)
-//            assertQueryParam("region", "ID")
+            assertNoBodyParam()
+            assertTotalQueryParams(3)
+            assertQueryParam("api_key", CloudMovieDataStore.KEY)
+            assertQueryParam("region", "ID")
+            assertQueryParam("page", 1)
         }
         observer.assertSuccessObserver(1)
         val expectedResult = PAGINATED_MOVIE_LIST
@@ -56,8 +59,11 @@ class CloudMovieDataStoreTest : CloudDataStoreTest() {
                 RequestAssertionUtils.Method.GET,
                 UrlConstants.SEARCH_MOVIE
             )
-//            assertTotalQueryParams(1)
-//            assertQueryParam("query", "avengers")
+            assertNoBodyParam()
+            assertTotalQueryParams(3)
+            assertQueryParam("api_key", CloudMovieDataStore.KEY)
+            assertQueryParam("query", "avengers")
+            assertQueryParam("page", 1)
         }
         observer.assertSuccessObserver(1)
         val expectedResult = PAGINATED_MOVIE_LIST
@@ -79,8 +85,9 @@ class CloudMovieDataStoreTest : CloudDataStoreTest() {
                 UrlConstants.MOVIE_DETAIL,
                 movieId.toString()
             )
-//            assertTotalQueryParams(1)
-//            assertQueryParam("query", "avengers")
+            assertNoBodyParam()
+            assertTotalQueryParams(1)
+            assertQueryParam("api_key", CloudMovieDataStore.KEY)
         }
         observer.assertSuccessObserver(1)
         val expectedResult = MOVIE_DETAIL
