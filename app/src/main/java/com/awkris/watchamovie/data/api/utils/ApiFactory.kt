@@ -4,6 +4,7 @@ import com.awkris.watchamovie.BuildConfig
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -41,6 +42,9 @@ class ApiFactory(gson: Gson) {
             .retryOnConnectionFailure(true)
             .apply {
                 if (BuildConfig.BUILD_TYPE.contentEquals("debug")) {
+                    val loggingInterceptor = HttpLoggingInterceptor()
+                    loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                    addInterceptor(loggingInterceptor)
                     addNetworkInterceptor(StethoInterceptor())
                 }
             }
