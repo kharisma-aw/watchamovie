@@ -1,7 +1,7 @@
-package com.awkris.watchamovie.data.api
+package com.awkris.watchamovie.data.datastore
 
+import com.awkris.watchamovie.data.api.MovieDbApi
 import com.awkris.watchamovie.data.api.utils.UrlConstants
-import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse

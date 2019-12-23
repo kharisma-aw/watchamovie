@@ -1,4 +1,4 @@
-package com.awkris.watchamovie.data.api
+package com.awkris.watchamovie.data.datastore
 
 import com.awkris.watchamovie.MockitoTest
 import okhttp3.mockwebserver.MockResponse
