@@ -1,7 +1,8 @@
-package com.awkris.watchamovie.data.datastore
+package com.awkris.watchamovie.data.datastore.cloud
 
 import com.awkris.watchamovie.data.api.MovieDbApi
 import com.awkris.watchamovie.data.api.utils.UrlConstants
+import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse
@@ -31,10 +32,7 @@ class CloudMovieDataStoreTest : CloudDataStoreTest() {
         cloudMovieDataStore.getNowPlayingList("ID", 1).subscribe(observer)
 
         RequestAssertionUtils(takeRequest()).run {
-            assertRequestLine(
-                RequestAssertionUtils.Method.GET,
-                UrlConstants.NOW_PLAYING
-            )
+            assertRequestLine(RequestAssertionUtils.Method.GET, UrlConstants.NOW_PLAYING)
             assertNoBodyParam()
             assertTotalQueryParams(3)
             assertQueryParam("api_key", CloudMovieDataStore.KEY)
@@ -55,10 +53,7 @@ class CloudMovieDataStoreTest : CloudDataStoreTest() {
         cloudMovieDataStore.searchMovie("avengers", 1).subscribe(observer)
 
         RequestAssertionUtils(takeRequest()).run {
-            assertRequestLine(
-                RequestAssertionUtils.Method.GET,
-                UrlConstants.SEARCH_MOVIE
-            )
+            assertRequestLine(RequestAssertionUtils.Method.GET, UrlConstants.SEARCH_MOVIE)
             assertNoBodyParam()
             assertTotalQueryParams(3)
             assertQueryParam("api_key", CloudMovieDataStore.KEY)
