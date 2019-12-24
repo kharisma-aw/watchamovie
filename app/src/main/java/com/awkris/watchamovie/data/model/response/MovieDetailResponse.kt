@@ -51,7 +51,7 @@ data class MovieDetailResponse(
     @SerializedName("backdrop_path")
     val backdropPath: String?,
     @SerializedName("belongs_to_collection")
-    val belongsToCollection: List<Collection>?,
+    val belongsToCollection: Collection?,
     @SerializedName("budget")
     val budget: Int,
     @SerializedName("genres")
