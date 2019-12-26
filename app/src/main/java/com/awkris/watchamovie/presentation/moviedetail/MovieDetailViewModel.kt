@@ -3,7 +3,6 @@ package com.awkris.watchamovie.presentation.moviedetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository

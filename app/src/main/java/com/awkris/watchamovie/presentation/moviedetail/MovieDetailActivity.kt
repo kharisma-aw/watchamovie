@@ -25,15 +25,18 @@ class MovieDetailActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory<MovieDetailViewModel>
     private lateinit var viewModel: MovieDetailViewModel
 
+    var movieId = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
         appComponent.inject(this)
         viewModel = viewModelFactory.create(MovieDetailViewModel::class.java)
 
+        val bundle = intent.extras
+        if (bundle != null) movieId = bundle[MOVIE_ID] as Int
 
-
-        btn_retry.setOnClickListener { viewModel.onScreenCreated(MOVIE_ID) }
+        btn_retry.setOnClickListener { viewModel.onScreenCreated(movieId) }
         viewModel.getMovieDetail().observe(
             this,
             Observer<MovieDetailResponse> { t ->
@@ -58,7 +61,7 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         )
 
-        viewModel.onScreenCreated(MOVIE_ID)
+        viewModel.onScreenCreated(movieId)
     }
 
     override fun onDestroy() {
@@ -100,6 +103,12 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val MOVIE_ID = 181812
+        private const val MOVIE_ID = "MOVIE_ID"
+
+        fun newIntent(context: Context, movieId: Int): Intent? {
+            return Intent(context, MovieDetailActivity::class.java).apply {
+                putExtra(MOVIE_ID, movieId)
+            }
+        }
     }
 }

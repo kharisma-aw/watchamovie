@@ -2,7 +2,6 @@ package com.awkris.watchamovie.presentation.nowplaying
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.MovieResponse
