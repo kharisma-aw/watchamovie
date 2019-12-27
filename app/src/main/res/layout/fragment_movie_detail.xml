@@ -20,7 +20,8 @@
             android:layout_height="0dp"
             android:scaleType="fitXY"
             app:layout_constraintHeight_percent="0.35"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <ImageView
             android:id="@+id/img_poster"
@@ -31,14 +32,16 @@
             app:layout_constraintDimensionRatio="3:4"
             app:layout_constraintHeight_percent="0.26"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline" />
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.22" />
+            app:layout_constraintGuide_percent="0.22"
+            />
 
         <TextView
             android:id="@+id/txt_title"
@@ -51,7 +54,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/img_poster"
             app:layout_constraintTop_toBottomOf="@id/img_backdrop"
-            tools:text="Star Wars: The Rise of Skywalker" />
+            tools:text="Star Wars: The Rise of Skywalker"
+            />
 
         <TextView
             android:id="@+id/txt_overview_header"
@@ -63,7 +67,8 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/barrier" />
+            app:layout_constraintTop_toBottomOf="@id/barrier"
+            />
 
         <TextView
             android:id="@+id/txt_overview_content"
@@ -76,15 +81,29 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_overview_header"
-            tools:text="The surviving Resistance faces the First Order once again as the journey of Rey, Finn and Poe Dameron continues. With the power and knowledge of generations behind them, the final battle begins." />
+            tools:text="The surviving Resistance faces the First Order once again as the journey of Rey, Finn and Poe Dameron continues. With the power and knowledge of generations behind them, the final battle begins."
+            />
+
+        <ImageView
+            android:id="@+id/btn_addwatchlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_normal"
+            android:layout_marginTop="@dimen/space_xsmall"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_add_wishlist"
+            app:layout_constraintStart_toStartOf="@id/txt_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_title"
+            />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="img_poster,txt_title"
-            tools:layout_editor_absoluteY="731dp" />
+            app:constraint_referenced_ids="img_poster,btn_addwatchlist"
+            tools:layout_editor_absoluteY="731dp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -93,6 +112,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        />
 
 </FrameLayout>
