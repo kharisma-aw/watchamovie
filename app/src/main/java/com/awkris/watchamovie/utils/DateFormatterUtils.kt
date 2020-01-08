@@ -8,7 +8,7 @@ import java.util.*
 fun formatReleaseYear(s: String): String {
     val responsePattern = SimpleDateFormat(DateFormat.RESPONSE_FORMAT_PATTERN)
     val yearPattern = SimpleDateFormat(DateFormat.YEAR_FORMAT_PATTERN)
-    return yearPattern.format(requireNotNull(responsePattern.parse(s))).toString()
+    return yearPattern.format(requireNotNull(responsePattern.parse(s)))
 }
 
 @SuppressLint("SimpleDateFormat")
