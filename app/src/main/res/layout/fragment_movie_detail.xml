@@ -18,7 +18,7 @@
             android:id="@+id/img_backdrop"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             app:layout_constraintHeight_percent="0.35"
             app:layout_constraintTop_toTopOf="parent"
             />
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/space_normal"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="3:4"
             app:layout_constraintHeight_percent="0.26"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,24 +84,12 @@
             tools:text="The surviving Resistance faces the First Order once again as the journey of Rey, Finn and Poe Dameron continues. With the power and knowledge of generations behind them, the final battle begins."
             />
 
-        <ImageView
-            android:id="@+id/btn_addwatchlist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/space_normal"
-            android:layout_marginTop="@dimen/space_xsmall"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_add_wishlist"
-            app:layout_constraintStart_toStartOf="@id/txt_title"
-            app:layout_constraintTop_toBottomOf="@id/txt_title"
-            />
-
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="img_poster,btn_addwatchlist"
+            app:constraint_referenced_ids="img_poster,txt_title"
             tools:layout_editor_absoluteY="731dp"
             />
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <item
+        android:id="@+id/menu_add_watchlist"
+        android:icon="@drawable/ic_bookmark"
+        android:title="@string/toolbar.menu.addwatchlist"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_remove_watchlist"
+        android:icon="@drawable/ic_bookmarked"
+        android:title="@string/toolbar.menu.deletewatchlist"
+        android:visible="false"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_add_reminder"
+        android:icon="@drawable/ic_add_reminder"
+        android:title="@string/toolbar.menu.addreminder"
+        android:visible="false"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_delete_reminder"
+        android:icon="@drawable/ic_delete_reminder"
+        android:title="@string/toolbar.menu.deletereminder"
+        android:visible="false"
+        app:showAsAction="always"
+        />
+
+</menu>
