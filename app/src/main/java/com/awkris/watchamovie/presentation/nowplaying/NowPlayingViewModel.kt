@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 
 class NowPlayingViewModel @Inject constructor(
-    dataSourceFactory: NowPlayingDataSourceFactory
+    private val dataSourceFactory: NowPlayingDataSourceFactory
 ) : ViewModel() {
     val networkState: LiveData<NetworkState>
     val nowPlayingList: LiveData<PagedList<MovieResponse>>
@@ -28,5 +28,9 @@ class NowPlayingViewModel @Inject constructor(
             .build()
 
         nowPlayingList = LivePagedListBuilder(dataSourceFactory, pagedListConfig).build()
+    }
+
+    fun refresh() {
+        dataSourceFactory.recreate()
     }
 }
