@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModel
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository
+import com.awkris.watchamovie.data.room.entity.Movie
+import io.reactivex.CompletableObserver
+import io.reactivex.MaybeObserver
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -15,10 +19,104 @@ import javax.inject.Inject
 class MovieDetailViewModel @Inject constructor(
     private val repository: MovieDbRepository
 ) : ViewModel() {
+    private val isInWatchlist: MutableLiveData<Boolean> = MutableLiveData()
+    private val isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
     private val movieDetail: MutableLiveData<MovieDetailResponse> = MutableLiveData()
     private val networkState: MutableLiveData<NetworkState> = MutableLiveData()
+    private val disposable = CompositeDisposable()
 
-    private lateinit var disposable: Disposable
+    fun onScreenCreated(movieId: Int) {
+        findMovie(movieId)
+        getMovieDetail(movieId)
+    }
+
+    fun clear() {
+        if (!disposable.isDisposed) disposable.dispose()
+    }
+
+    fun isInWatchlist(): LiveData<Boolean> {
+        return isInWatchlist
+    }
+
+    fun isReminderEnabled(): LiveData<Boolean> {
+        return isReminderEnabled
+    }
+
+    fun getMovieDetail(): LiveData<MovieDetailResponse> {
+        return movieDetail
+    }
+
+    fun getNetworkState(): LiveData<NetworkState> {
+        return networkState
+    }
+
+    fun deleteFromWatchlist(movieId: Int) {
+        repository.deleteMovie(movieId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                object : CompletableObserver {
+                    override fun onComplete() {
+                        isInWatchlist.postValue(false)
+                        isReminderEnabled.postValue(null)
+                    }
+
+                    override fun onSubscribe(d: Disposable) {
+                        disposable.add(d)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        networkState.postValue(NetworkState.Error(e.message))
+                    }
+
+                }
+            )
+    }
+
+    fun saveToWatchlist() {
+        repository.saveToWatchlist(requireNotNull(getMovieDetail().value))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                object : CompletableObserver {
+                    override fun onComplete() {
+                        isInWatchlist.postValue(true)
+                        isReminderEnabled.postValue(false)
+                    }
+
+                    override fun onSubscribe(d: Disposable) {
+                        disposable.add(d)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        networkState.postValue(NetworkState.Error(e.message))
+                    }
+
+                }
+            )
+    }
+
+    fun updateReminder(movieId: Int, setReminder: Boolean) {
+        repository.updateReminder(movieId, setReminder)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                object : CompletableObserver {
+                    override fun onComplete() {
+                        isReminderEnabled.postValue(setReminder)
+                    }
+
+                    override fun onSubscribe(d: Disposable) {
+                        disposable.add(d)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        networkState.postValue(NetworkState.Error(e.message))
+                    }
+
+                }
+            )
+    }
 
     private fun getMovieDetail(movieId: Int) {
         networkState.postValue(NetworkState.Loading)
@@ -28,7 +126,7 @@ class MovieDetailViewModel @Inject constructor(
             .subscribe(
                 object : SingleObserver<MovieDetailResponse> {
                     override fun onSubscribe(d: Disposable) {
-                        disposable = d
+                        disposable.add(d)
                     }
 
                     override fun onSuccess(item: MovieDetailResponse) {
@@ -43,19 +141,29 @@ class MovieDetailViewModel @Inject constructor(
             )
     }
 
-    fun clear() {
-        if (!disposable.isDisposed) disposable.dispose()
-    }
+    private fun findMovie(movieId: Int) {
+        repository.findMovie(movieId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                object : MaybeObserver<Movie> {
+                    override fun onSuccess(t: Movie) {
+                        isInWatchlist.postValue(true)
+                        isReminderEnabled.postValue(t.reminderState)
+                    }
 
-    fun onScreenCreated(movieId: Int) {
-        getMovieDetail(movieId)
-    }
+                    override fun onComplete() {
+                        isInWatchlist.postValue(false)
+                    }
 
-    fun getMovieDetail(): LiveData<MovieDetailResponse> {
-        return movieDetail
-    }
+                    override fun onSubscribe(d: Disposable) {
+                        disposable.add(d)
+                    }
 
-    fun getNetworkState(): LiveData<NetworkState> {
-        return networkState
+                    override fun onError(e: Throwable) {
+                        networkState.postValue(NetworkState.Error(e.message))
+                    }
+                }
+            )
     }
 }
