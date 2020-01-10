@@ -40,17 +40,6 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector,
     }
 
     override fun navigateToMovieDetail(movieId: Int) {
-//        val currentFragment = supportFragmentManager.findFragmentById(R.id.main_container)
-//        val transaction = supportFragmentManager.beginTransaction()
-//        transaction
-//            .add(
-//                R.id.main_container,
-//                MovieDetailFragment.newInstance(movieId),
-//                MOVIE_DETAIL_TAG
-//            )
-//            .addToBackStack(MOVIE_DETAIL_TAG)
-//            .apply { currentFragment?.let { hide(it) } }
-//            .commit()
         startActivity(MovieDetailActivity.newIntent(this, movieId))
     }
 
@@ -76,7 +65,6 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector,
     }
 
     companion object {
-        private const val MOVIE_DETAIL_TAG = "MOVIE_DETAIL_TAG"
         private const val SEARCH_TAG = "SEARCH_TAG"
 
         fun newIntent(context: Context, movieId: Int): Intent {
