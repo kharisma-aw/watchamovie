@@ -4,28 +4,25 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.awkris.watchamovie.R
-import com.awkris.watchamovie.WatchAMovie.Companion.appComponent
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
-import com.awkris.watchamovie.di.factory.ViewModelFactory
 import com.awkris.watchamovie.utils.Constants
 import com.awkris.watchamovie.utils.NotificationUtils
 import com.awkris.watchamovie.utils.formatReleaseYear
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.error_state.*
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
-import timber.log.Timber
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class MovieDetailActivity : AppCompatActivity() {
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory<MovieDetailViewModel>
-    private lateinit var viewModel: MovieDetailViewModel
+    private val viewModel: MovieDetailViewModel by viewModel()
     private lateinit var menu: Menu
 
     private var movieId = 0
@@ -33,12 +30,9 @@ class MovieDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_movie_detail)
-        appComponent.inject(this)
 
         val bundle = intent.extras
         movieId = requireNotNull(bundle).getInt(MOVIE_ID)
-
-        viewModel = viewModelFactory.create(MovieDetailViewModel::class.java)
 
         setObserver()
         btn_retry.setOnClickListener { viewModel.onScreenCreated(movieId) }
@@ -73,7 +67,6 @@ class MovieDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_add_reminder -> {
-                Timber.d("Adding reminder")
                 NotificationUtils.scheduleAlarmsForReminder(
                     this,
                     requireNotNull(viewModel.getMovieDetail().value)

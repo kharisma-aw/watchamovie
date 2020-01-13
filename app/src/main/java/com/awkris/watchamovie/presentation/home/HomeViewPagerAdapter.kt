@@ -1,5 +1,6 @@
 package com.awkris.watchamovie.presentation.home
 
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.awkris.watchamovie.presentation.nowplaying.NowPlayingFragment
@@ -23,5 +24,5 @@ class HomeViewPagerAdapter(fm: FragmentManager)
         }
     }
 
-    override fun getItem(position: Int) = fragmentList[position]
+    override fun getItem(position: Int) = fragmentList[position] as Fragment
 }

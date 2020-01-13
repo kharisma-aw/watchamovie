@@ -7,10 +7,9 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieResponse
-import javax.inject.Inject
 
 
-class NowPlayingViewModel @Inject constructor(
+class NowPlayingViewModel(
     private val dataSourceFactory: NowPlayingDataSourceFactory
 ) : ViewModel() {
     val networkState: LiveData<NetworkState>

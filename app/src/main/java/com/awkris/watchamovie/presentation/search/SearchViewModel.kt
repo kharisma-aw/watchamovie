@@ -1,16 +1,14 @@
 package com.awkris.watchamovie.presentation.search
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieResponse
-import timber.log.Timber
-import javax.inject.Inject
 
-class SearchViewModel @Inject constructor(
-    private val dataSourceFactory: SearchDataSourceFactory
-) : ViewModel() {
+class SearchViewModel(private val dataSourceFactory: SearchDataSourceFactory) : ViewModel() {
     val networkState: LiveData<NetworkState>
     val searchList: LiveData<PagedList<MovieResponse>>
 

@@ -9,9 +9,9 @@ import com.awkris.watchamovie.data.room.mapper.transform
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import javax.inject.Inject
+import org.koin.core.KoinComponent
 
-class DiskMovieDataStore @Inject constructor(private val db: MovieDatabase) {
+class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
     fun saveToWatchlist(movie: MovieDetailResponse): Completable {
         return db.movieDao().insert(transform(movie))
             .doOnError(::log)

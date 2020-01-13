@@ -5,24 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.awkris.watchamovie.R
-import com.awkris.watchamovie.WatchAMovie.Companion.appComponent
 import com.awkris.watchamovie.presentation.home.HomeFragment
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailActivity
 import com.awkris.watchamovie.presentation.search.SearchFragment
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), HasAndroidInjector,
-    FragmentListener {
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
-
+class MainActivity : AppCompatActivity(), FragmentListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appComponent.inject(this)
         setContentView(R.layout.activity_main)
 
         setDefaultFragment()
@@ -33,10 +23,6 @@ class MainActivity : AppCompatActivity(), HasAndroidInjector,
                 navigateToMovieDetail(movieId)
             }
         }
-    }
-
-    override fun androidInjector(): AndroidInjector<Any> {
-        return androidInjector
     }
 
     override fun navigateToMovieDetail(movieId: Int) {

@@ -6,12 +6,10 @@ import com.awkris.watchamovie.data.api.utils.log
 import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse
-import com.awkris.watchamovie.di.ApplicationScope
 import io.reactivex.Single
-import javax.inject.Inject
+import org.koin.core.KoinComponent
 
-@ApplicationScope
-class CloudMovieDataStore @Inject constructor(private val movieDbApi: MovieDbApi) {
+class CloudMovieDataStore(private val movieDbApi: MovieDbApi) : KoinComponent {
     fun getMovieDetail(movieId: Int): Single<MovieDetailResponse> {
         return movieDbApi.getMovieDetail(movieId, KEY)
             .doOnError(::log)

@@ -1,5 +1,3 @@
-//@file:JvmName("Constants")
-
 package com.awkris.watchamovie.data.api.utils
 
 object UrlConstants {

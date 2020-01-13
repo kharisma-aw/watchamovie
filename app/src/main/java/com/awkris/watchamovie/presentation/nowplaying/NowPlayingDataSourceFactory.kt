@@ -1,17 +1,18 @@
 package com.awkris.watchamovie.presentation.nowplaying
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import com.awkris.watchamovie.WatchAMovie.Companion.appComponent
 import com.awkris.watchamovie.data.model.response.MovieResponse
-import javax.inject.Inject
+import org.koin.core.KoinComponent
+import org.koin.core.get
 
-class NowPlayingDataSourceFactory @Inject constructor() : DataSource.Factory<Int, MovieResponse>() {
+class NowPlayingDataSourceFactory : DataSource.Factory<Int, MovieResponse>(), KoinComponent {
     private lateinit var nowPlayingDataSource: NowPlayingDataSource
     private val dataSource = MutableLiveData<NowPlayingDataSource>()
 
     override fun create(): DataSource<Int, MovieResponse> {
-        nowPlayingDataSource = appComponent.nowPlayingDataSource()
+        nowPlayingDataSource = get()
         dataSource.postValue(nowPlayingDataSource)
         return nowPlayingDataSource
     }
@@ -21,5 +22,7 @@ class NowPlayingDataSourceFactory @Inject constructor() : DataSource.Factory<Int
         create()
     }
 
-    fun getDataSource() = dataSource
+    fun getDataSource(): LiveData<NowPlayingDataSource> {
+        return dataSource
+    }
 }

@@ -2,14 +2,12 @@ package com.awkris.watchamovie.presentation.watchlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.awkris.watchamovie.data.repository.MovieDbRepository
 import com.awkris.watchamovie.data.room.entity.Movie
-import javax.inject.Inject
 
-class WatchlistViewModel @Inject constructor(repository: MovieDbRepository) : ViewModel() {
+class WatchlistViewModel(repository: MovieDbRepository) : ViewModel() {
     private val watchList: LiveData<PagedList<Movie>>
     private val dataSourceFactory = repository.getWatchList()
 

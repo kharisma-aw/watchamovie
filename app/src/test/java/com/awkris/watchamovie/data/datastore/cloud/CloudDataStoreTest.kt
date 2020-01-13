@@ -1,29 +1,33 @@
 package com.awkris.watchamovie.data.datastore.cloud
 
-import com.awkris.watchamovie.MockitoTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Before
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import timber.log.Timber
 import java.io.File
 import kotlin.test.assertNotNull
 
-abstract class CloudDataStoreTest : MockitoTest() {
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28])
+abstract class CloudDataStoreTest {
     private lateinit var server: MockWebServer
+    protected lateinit var baseUrl: String
 
     @Before
     @Throws(Exception::class)
-    override fun setUp() {
+    open fun setUp() {
         server = MockWebServer()
         baseUrl = server.url("/").toString()
-        super.setUp()
     }
 
     @After
     @Throws(Exception::class)
-    fun tearDown() {
+    open fun tearDown() {
         server.shutdown()
     }
 

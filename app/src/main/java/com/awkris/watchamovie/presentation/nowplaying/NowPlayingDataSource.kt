@@ -9,10 +9,9 @@ import com.awkris.watchamovie.data.repository.MovieDbRepository
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import java.util.*
-import javax.inject.Inject
 
 
-class NowPlayingDataSource @Inject constructor(
+class NowPlayingDataSource(
     private val repository: MovieDbRepository
 ) : PageKeyedDataSource<Int, MovieResponse>() {
     var networkState = MutableLiveData<NetworkState>()
@@ -66,6 +65,5 @@ class NowPlayingDataSource @Inject constructor(
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieResponse>) {
-        //Unused
     }
 }

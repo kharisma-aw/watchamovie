@@ -10,12 +10,12 @@ import com.awkris.watchamovie.data.room.entity.Movie
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import javax.inject.Inject
+import org.koin.core.KoinComponent
 
-class MovieDbRepository @Inject constructor(
+class MovieDbRepository(
     private val cloudMovieDataStore: CloudMovieDataStore,
     private val diskMovieDataStore: DiskMovieDataStore
-) {
+) : KoinComponent{
     fun getMovieDetail(movieId: Int): Single<MovieDetailResponse> {
         return cloudMovieDataStore.getMovieDetail(movieId)
     }

@@ -14,11 +14,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
-class MovieDetailViewModel @Inject constructor(
-    private val repository: MovieDbRepository
-) : ViewModel() {
+class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewModel() {
     private val isInWatchlist: MutableLiveData<Boolean> = MutableLiveData()
     private val isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
     private val movieDetail: MutableLiveData<MovieDetailResponse> = MutableLiveData()

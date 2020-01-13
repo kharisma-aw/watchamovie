@@ -1,6 +1,5 @@
 package com.awkris.watchamovie.data.datastore.disk
 
-import androidx.paging.DataSource
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.data.room.mapper.transform
 import com.awkris.watchamovie.mockdata.MOVIE_DETAIL
@@ -11,14 +10,12 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
-import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class DiskMovieDataStoreTest : DiskDataStoreTest() {
-
     @Test
     fun `save movie to database successfully`() {
         val movie = transform(MOVIE_DETAIL)

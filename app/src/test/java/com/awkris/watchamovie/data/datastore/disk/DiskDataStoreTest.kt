@@ -18,7 +18,7 @@ abstract class DiskDataStoreTest {
     protected lateinit var diskDataStore: DiskMovieDataStore
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         diskDataStore = DiskMovieDataStore(db)
         whenever(db.movieDao()).thenReturn(movieDao)
     }

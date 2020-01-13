@@ -10,15 +10,14 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import timber.log.Timber
-import javax.inject.Inject
 
-class BootReceiver @Inject constructor(
-    private val repository: MovieDbRepository
-) : BroadcastReceiver() {
+class BootReceiver : BroadcastReceiver(), KoinComponent {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null && intent?.action.equals("android.intent.action.BOOT_COMPLETED")) {
-            repository.getAllReminders()
+            get<MovieDbRepository>().getAllReminders()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
