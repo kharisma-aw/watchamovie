@@ -15,6 +15,10 @@ class CloudMovieDataStore(private val movieDbApi: MovieDbApi) : KoinComponent {
             .doOnError(::log)
     }
 
+    suspend fun getMovieDetailCoroutine(movieId: Int): MovieDetailResponse {
+        return movieDbApi.getMovieDetailCoroutine(movieId, KEY)
+    }
+
     fun getNowPlayingList(region: String, page: Int?): Single<PaginatedList<MovieResponse>> {
         return movieDbApi.getNowPlayingList(KEY, region, page)
             .map {
@@ -23,12 +27,29 @@ class CloudMovieDataStore(private val movieDbApi: MovieDbApi) : KoinComponent {
             .doOnError(::log)
     }
 
+    suspend fun getNowPlayingListCoroutine(
+        region: String,
+        page: Int?
+    ): PaginatedList<MovieResponse> {
+        val response = movieDbApi.getNowPlayingListCoroutine(KEY, region, page)
+        return with(response) {
+            PaginatedList(movieList.filterNotNull(), this.page, totalPages, totalResults)
+        }
+    }
+
     fun searchMovie(query: String, page: Int?): Single<PaginatedList<MovieResponse>> {
         return movieDbApi.searchMovie(KEY, query, page)
             .map {
                 PaginatedList(it.movieList.filterNotNull(), it.page, it.totalPages, it.totalResults)
             }
             .doOnError(::log)
+    }
+
+    suspend fun searchMovieCoroutine(query: String, page: Int?): PaginatedList<MovieResponse> {
+        val response = movieDbApi.searchMovieCoroutine(KEY, query, page)
+        return with(response) {
+            PaginatedList(movieList.filterNotNull(), this.page, totalPages, totalResults)
+        }
     }
 
     companion object {

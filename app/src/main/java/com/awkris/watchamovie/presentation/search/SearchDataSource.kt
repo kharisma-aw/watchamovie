@@ -3,11 +3,10 @@ package com.awkris.watchamovie.presentation.search
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.awkris.watchamovie.data.model.NetworkState
-import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.MovieResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SearchDataSource(
     private val repository: MovieDbRepository,
@@ -23,69 +22,53 @@ class SearchDataSource(
     ) {
         if (keyword.isNotEmpty()) {
             networkState.postValue(NetworkState.Loading)
-            repository.searchMovie(keyword, page).subscribe(
-                object : SingleObserver<PaginatedList<MovieResponse>> {
-                    override fun onSuccess(t: PaginatedList<MovieResponse>) {
-                        networkState.postValue(NetworkState.Success)
-                        callback.onResult(
-                            t.list,
-                            if (t.page > 1) t.page - 1 else null,
-                            if (t.totalPages > 1) t.page + 1 else null
-                        )
-                    }
-
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        networkState.postValue(NetworkState.Error(e.message))
-                    }
-
+            GlobalScope.launch {
+                try {
+                    val result = repository.searchMovieCoroutine(keyword, page)
+                    networkState.postValue(NetworkState.Success)
+                    callback.onResult(
+                        result.list,
+                        if (result.page > 1) result.page - 1 else null,
+                        if (result.totalPages > 1) result.page + 1 else null
+                    )
+                } catch (e: Exception) {
+                    networkState.postValue(NetworkState.Error(e.message))
                 }
-            )
+            }
         } else {
-            networkState.postValue(NetworkState.Success)
             callback.onResult(emptyList<MovieResponse>(), null, null)
         }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieResponse>) {
         networkState.postValue(NetworkState.Loading)
-        repository.searchMovie(keyword, params.key).subscribe(
-            object : SingleObserver<PaginatedList<MovieResponse>> {
-                override fun onSuccess(t: PaginatedList<MovieResponse>) {
-                    networkState.postValue(NetworkState.Success)
-                    callback.onResult(t.list, if (t.page < t.totalPages) t.page + 1 else null)
-                }
-
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                override fun onError(e: Throwable) {
-                    networkState.postValue(NetworkState.Error(e.message))
-                }
-
+        GlobalScope.launch {
+            try {
+                val result = repository.searchMovieCoroutine(keyword, params.key)
+                networkState.postValue(NetworkState.Success)
+                callback.onResult(
+                    result.list,
+                    if (result.page < result.totalPages) result.page + 1 else null
+                )
+            } catch (e: Exception) {
+                networkState.postValue(NetworkState.Error(e.message))
             }
-        )
+        }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieResponse>) {
         networkState.postValue(NetworkState.Loading)
-        repository.searchMovie(keyword, params.key).subscribe(
-            object : SingleObserver<PaginatedList<MovieResponse>> {
-                override fun onSuccess(t: PaginatedList<MovieResponse>) {
-                    networkState.postValue(NetworkState.Success)
-                    callback.onResult(t.list, if (t.page > 1) t.page - 1 else null)
-                }
-
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                override fun onError(e: Throwable) {
-                    networkState.postValue(NetworkState.Error(e.message))
-                }
-
+        GlobalScope.launch {
+            try {
+                val result = repository.searchMovieCoroutine(keyword, params.key)
+                networkState.postValue(NetworkState.Success)
+                callback.onResult(
+                    result.list,
+                    if (result.page > 1) result.page - 1 else null
+                )
+            } catch (e: Exception) {
+                networkState.postValue(NetworkState.Error(e.message))
             }
-        )
+        }
     }
 }

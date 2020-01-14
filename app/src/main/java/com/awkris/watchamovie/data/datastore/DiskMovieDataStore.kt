@@ -17,9 +17,17 @@ class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
             .doOnError(::log)
     }
 
+    suspend fun saveToWatchlistCoroutine(movie: MovieDetailResponse): Long {
+        return db.movieDao().insertCoroutine(transform(movie))
+    }
+
     fun deleteMovie(id: Int): Completable {
         return db.movieDao().deleteById(id)
             .doOnError(::log)
+    }
+
+    suspend fun deleteMovieById(id: Int): Int {
+        return db.movieDao().deleteByIdCoroutine(id)
     }
 
     fun findMovie(id: Int): Maybe<Movie> {
@@ -27,9 +35,17 @@ class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
             .doOnError(::log)
     }
 
+    suspend fun findMovieCoroutine(id: Int): Movie? {
+        return db.movieDao().getMovieCoroutine(id)
+    }
+
     fun getAllReminders(): Single<List<Movie>> {
         return db.movieDao().getAllReminders()
             .doOnError(::log)
+    }
+
+    suspend fun getAllRemindersCoroutine(): List<Movie> {
+        return db.movieDao().getAllRemindersCoroutine()
     }
 
     fun getWatchList(): DataSource.Factory<Int, Movie> {
@@ -38,5 +54,9 @@ class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
 
     fun updateReminder(id: Int, setReminder: Boolean): Completable {
         return db.movieDao().updateReminder(id, setReminder)
+    }
+
+    suspend fun updateReminderCoroutine(id: Int, setReminder: Boolean): Int {
+        return db.movieDao().updateReminderCoroutine(id, setReminder)
     }
 }

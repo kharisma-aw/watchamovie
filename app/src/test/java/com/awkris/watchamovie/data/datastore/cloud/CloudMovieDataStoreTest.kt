@@ -13,6 +13,8 @@ import com.awkris.watchamovie.testutils.RequestAssertionUtils
 import com.awkris.watchamovie.testutils.assertSuccessObserver
 import com.google.gson.Gson
 import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -69,6 +71,27 @@ class CloudMovieDataStoreTest : CloudDataStoreTest(), KoinTest {
     }
 
     @Test
+    fun `get now-playing movie list successfully (coroutine)`() {
+        enqueueSuccessResponse("success/get/now_playing.json")
+
+        lateinit var result: PaginatedList<MovieResponse>
+        GlobalScope.launch {
+            result = cloudMovieDataStore.getNowPlayingListCoroutine("ID", 1)
+        }
+
+        RequestAssertionUtils(takeRequest()).run {
+            assertRequestLine(RequestAssertionUtils.Method.GET, UrlConstants.NOW_PLAYING)
+            assertNoBodyParam()
+            assertTotalQueryParams(3)
+            assertQueryParam("api_key", CloudMovieDataStore.KEY)
+            assertQueryParam("region", "ID")
+            assertQueryParam("page", 1)
+        }
+        val expectedResult = PAGINATED_MOVIE_LIST
+        Assert.assertEquals(expectedResult, result)
+    }
+
+    @Test
     fun `search movie successfully`() {
         enqueueSuccessResponse("success/get/search_movie.json")
 
@@ -87,6 +110,27 @@ class CloudMovieDataStoreTest : CloudDataStoreTest(), KoinTest {
         val expectedResult = PAGINATED_MOVIE_LIST
         val actualResult = observer.values()[0]
         Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `search movie successfully (coroutine)`() {
+        enqueueSuccessResponse("success/get/now_playing.json")
+
+        lateinit var result: PaginatedList<MovieResponse>
+        GlobalScope.launch {
+            result = cloudMovieDataStore.searchMovieCoroutine("avengers", 1)
+        }
+
+        RequestAssertionUtils(takeRequest()).run {
+            assertRequestLine(RequestAssertionUtils.Method.GET, UrlConstants.SEARCH_MOVIE)
+            assertNoBodyParam()
+            assertTotalQueryParams(3)
+            assertQueryParam("api_key", CloudMovieDataStore.KEY)
+            assertQueryParam("query", "avengers")
+            assertQueryParam("page", 1)
+        }
+        val expectedResult = PAGINATED_MOVIE_LIST
+        Assert.assertEquals(expectedResult, result)
     }
 
     @Test
@@ -111,5 +155,29 @@ class CloudMovieDataStoreTest : CloudDataStoreTest(), KoinTest {
         val expectedResult = MOVIE_DETAIL
         val actualResult = observer.values()[0]
         Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `get movie detail successfully (coroutine)`() {
+        enqueueSuccessResponse("success/get/movie_detail.json")
+
+        val movieId = 550
+        lateinit var result: MovieDetailResponse
+        GlobalScope.launch {
+            result = cloudMovieDataStore.getMovieDetailCoroutine(movieId)
+        }
+
+        RequestAssertionUtils(takeRequest()).run {
+            assertRequestLine(
+                RequestAssertionUtils.Method.GET,
+                UrlConstants.MOVIE_DETAIL,
+                movieId.toString()
+            )
+            assertNoBodyParam()
+            assertTotalQueryParams(1)
+            assertQueryParam("api_key", CloudMovieDataStore.KEY)
+        }
+        val expectedResult = MOVIE_DETAIL
+        Assert.assertEquals(expectedResult, result)
     }
 }
