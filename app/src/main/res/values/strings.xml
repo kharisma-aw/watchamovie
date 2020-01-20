@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">WatchaMovie</string>
+
+    <string name="message.errorstate">There\'s a problem with the connection.</string>
+    <string name="title.section.overview">Overview</string>
+    <string name="title.movie.format"><em>%s</em> (<i>%s</i>)</string>
 </resources>
