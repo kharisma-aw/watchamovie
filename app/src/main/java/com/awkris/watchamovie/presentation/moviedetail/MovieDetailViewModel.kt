@@ -6,11 +6,12 @@ import androidx.lifecycle.ViewModel
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository
+import com.awkris.watchamovie.presentation.base.BaseViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewModel() {
+class MovieDetailViewModel(private val repository: MovieDbRepository) : BaseViewModel() {
     private val isInWatchlist: MutableLiveData<Boolean> = MutableLiveData()
     private val isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
     private val movieDetail: MutableLiveData<MovieDetailResponse> = MutableLiveData()
@@ -22,7 +23,8 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
         getMovieDetail(movieId)
     }
 
-    fun clear() {
+    override fun clear() {
+        super.clear()
         if (!disposable.isDisposed) disposable.dispose()
     }
 
@@ -43,7 +45,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     fun deleteFromWatchlist(movieId: Int) {
-        GlobalScope.launch {
+        scope.launch {
             val result = repository.deleteMovieById(movieId)
             if (result == 1) {
                 isInWatchlist.postValue(false)
@@ -53,7 +55,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     fun saveToWatchlist() {
-        GlobalScope.launch {
+        scope.launch {
             val rowId = repository.saveToWatchlistCoroutine(requireNotNull(getMovieDetail().value))
             if (rowId != null && rowId > 0) {
                 isInWatchlist.postValue(true)
@@ -63,7 +65,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     fun updateReminder(movieId: Int, setReminder: Boolean) {
-        GlobalScope.launch {
+        scope.launch {
             val result = repository.updateReminderCoroutine(movieId, setReminder)
             if (result == 1) {
                 isReminderEnabled.postValue(setReminder)
@@ -72,7 +74,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     private fun getMovieDetail(movieId: Int) {
-        GlobalScope.launch {
+        scope.launch {
             networkState.postValue(NetworkState.Loading)
             val movieDetailResponse = repository.getMovieDetailCoroutine(movieId)
             networkState.postValue(NetworkState.Success)
@@ -81,7 +83,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     private fun findMovie(movieId: Int) {
-        GlobalScope.launch {
+        scope.launch {
             val movie = repository.findMovieCoroutine(movieId)
             isInWatchlist.postValue(movie != null)
         }

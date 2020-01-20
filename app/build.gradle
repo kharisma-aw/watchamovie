@@ -44,6 +44,7 @@ ext {
     koin_version = "2.0.1"
     lifecycle_version = "2.2.0-rc03"
     mockito_version = "3.2.4"
+    nav_version = "2.1.0"
     okhttp_version = "3.14.4"
     paging_version = "2.1.1"
     retrofit_version = "2.6.2"
@@ -83,6 +84,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     // OkHttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"

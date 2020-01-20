@@ -5,8 +5,7 @@ import androidx.paging.PageKeyedDataSource
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 
@@ -16,12 +15,14 @@ class NowPlayingDataSource(
     var networkState = MutableLiveData<NetworkState>()
         private set
 
+    private val scope = CoroutineScope(Job() + Dispatchers.IO)
+
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, MovieResponse>
     ) {
         networkState.postValue(NetworkState.Loading)
-        GlobalScope.launch {
+        scope.launch {
             try {
                 val result = repository.getNowPlayingListCoroutine(Locale.getDefault().country)
                 networkState.postValue(NetworkState.Success)
@@ -38,7 +39,7 @@ class NowPlayingDataSource(
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieResponse>) {
         networkState.postValue(NetworkState.Loading)
-        GlobalScope.launch {
+        scope.launch {
             try {
                 val result = repository.getNowPlayingListCoroutine(Locale.getDefault().country, params.key)
                 networkState.postValue(NetworkState.Success)

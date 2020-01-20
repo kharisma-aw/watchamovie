@@ -1,6 +1,5 @@
 package com.awkris.watchamovie.di
 
-import android.content.Context
 import androidx.room.Room
 import com.awkris.watchamovie.data.api.MovieDbApi
 import com.awkris.watchamovie.data.api.utils.ApiFactory

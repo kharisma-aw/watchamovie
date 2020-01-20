@@ -1,13 +1,10 @@
 package com.awkris.watchamovie.presentation.moviedetail
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Html
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.*
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.NetworkState
@@ -20,40 +17,47 @@ import kotlinx.android.synthetic.main.error_state.*
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailFragment : Fragment() {
     private val viewModel: MovieDetailViewModel by viewModel()
     private lateinit var menu: Menu
 
     private var movieId = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_movie_detail)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_movie_detail, container, false)
+        setHasOptionsMenu(true)
+        return view
+    }
 
-        val bundle = intent.extras
-        movieId = requireNotNull(bundle).getInt(MOVIE_ID)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        movieId = requireNotNull(arguments).getInt(MOVIE_ID)
 
         setObserver()
         btn_retry.setOnClickListener { viewModel.onScreenCreated(movieId) }
         viewModel.onScreenCreated(movieId)
+        super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        this.menu = requireNotNull(menu)
-        menuInflater.inflate(R.menu.menu_detail, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        this.menu = menu
+        inflater.inflate(R.menu.menu_detail, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
         viewModel.isInWatchlist().observe(
-            this,
+            viewLifecycleOwner,
             Observer<Boolean> { inWatchlist ->
                 toggleAddWatchlistVisibility(!inWatchlist)
                 if (inWatchlist) {
                     toggleAddReminderVisibility(!(viewModel.isReminderEnabled().value ?: false))
                     viewModel.isReminderEnabled().observe(
-                        this,
+                        viewLifecycleOwner,
                         Observer<Boolean> { enabled ->
                             toggleAddReminderVisibility(if (enabled != null) !enabled else null)
                         }
@@ -61,14 +65,13 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
             }
         )
-        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_add_reminder -> {
                 NotificationUtils.scheduleAlarmsForReminder(
-                    this,
+                    requireContext(),
                     requireNotNull(viewModel.getMovieDetail().value)
                 )
                 viewModel.updateReminder(movieId, true)
@@ -76,7 +79,7 @@ class MovieDetailActivity : AppCompatActivity() {
             }
             R.id.menu_delete_reminder -> {
                 NotificationUtils.deleteAlarmsForReminder(
-                    this,
+                    requireContext(),
                     requireNotNull(viewModel.getMovieDetail().value)
                 )
                 viewModel.updateReminder(movieId, false)
@@ -101,7 +104,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun setObserver() {
         viewModel.getMovieDetail().observe(
-            this,
+            viewLifecycleOwner,
             Observer<MovieDetailResponse> { t ->
                 showErrorState(false)
                 showMovieDetail(t!!)
@@ -109,7 +112,7 @@ class MovieDetailActivity : AppCompatActivity() {
         )
 
         viewModel.getNetworkState().observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 when (it) {
                     NetworkState.Loading -> showLoadingProgress(true)
@@ -182,10 +185,8 @@ class MovieDetailActivity : AppCompatActivity() {
         const val MOVIE_ID = "MOVIE_ID"
         const val MOVIE_TITLE = "MOVIE_TITLE"
 
-        fun newIntent(context: Context, movieId: Int): Intent {
-            return Intent(context, MovieDetailActivity::class.java).apply {
-                putExtra(MOVIE_ID, movieId)
-            }
+        fun createBundle(movieId: Int): Bundle {
+            return bundleOf(Pair(MOVIE_ID, movieId))
         }
     }
 }

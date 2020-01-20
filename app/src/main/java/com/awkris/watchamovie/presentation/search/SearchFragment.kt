@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.presentation.common.MovieListAdapter
 import com.awkris.watchamovie.presentation.main.FragmentListener
+import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
 import com.awkris.watchamovie.utils.closeKeyboard
 import kotlinx.android.synthetic.main.fragment_search_movie.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -64,7 +67,10 @@ class SearchFragment : Fragment() {
             itemMovieClickListener = object :
                 ItemMovieClickListener {
                 override fun onItemClicked(id: Int) {
-                    fragmentListener.navigateToMovieDetail(id)
+                    findNavController().navigate(
+                        R.id.search_to_movieDetailFragment,
+                        MovieDetailFragment.createBundle(id)
+                    )
                 }
             }
         }

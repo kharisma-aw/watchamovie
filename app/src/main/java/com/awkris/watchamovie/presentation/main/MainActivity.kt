@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.awkris.watchamovie.R
-import com.awkris.watchamovie.presentation.home.HomeFragment
-import com.awkris.watchamovie.presentation.moviedetail.MovieDetailActivity
+import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
 import com.awkris.watchamovie.presentation.search.SearchFragment
 
 
@@ -15,10 +15,9 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setDefaultFragment()
         val bundle = intent.extras
         if (bundle != null) {
-            val movieId = bundle.getInt(MovieDetailActivity.MOVIE_ID)
+            val movieId = bundle.getInt(MovieDetailFragment.MOVIE_ID)
             if (movieId != 0) {
                 navigateToMovieDetail(movieId)
             }
@@ -26,15 +25,18 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     }
 
     override fun navigateToMovieDetail(movieId: Int) {
-        startActivity(MovieDetailActivity.newIntent(this, movieId))
+        findNavController(R.id.nav_host_fragment).navigate(
+            R.id.goto_movieDetailFragment,
+            MovieDetailFragment.createBundle(movieId)
+        )
     }
 
     override fun navigateToSearch() {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.main_container)
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
         val transaction = supportFragmentManager.beginTransaction()
         transaction
             .add(
-                R.id.main_container,
+                R.id.nav_host_fragment,
                 SearchFragment.newInstance(),
                 SEARCH_TAG
             )
@@ -43,11 +45,8 @@ class MainActivity : AppCompatActivity(), FragmentListener {
             .commit()
     }
 
-    private fun setDefaultFragment() {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction
-            .add(R.id.main_container, HomeFragment.newInstance())
-            .commit()
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.nav_host_fragment).navigateUp()
     }
 
     companion object {
@@ -55,7 +54,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
 
         fun newIntent(context: Context, movieId: Int): Intent {
             return Intent(context, MainActivity::class.java).apply {
-                putExtra(MovieDetailActivity.MOVIE_ID, movieId)
+                putExtra(MovieDetailFragment.MOVIE_ID, movieId)
             }
         }
     }

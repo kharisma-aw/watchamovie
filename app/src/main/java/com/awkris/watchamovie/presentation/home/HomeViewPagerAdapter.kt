@@ -1,14 +1,12 @@
 package com.awkris.watchamovie.presentation.home
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.fragment.app.FragmentPagerAdapter
 import com.awkris.watchamovie.presentation.nowplaying.NowPlayingFragment
 import com.awkris.watchamovie.presentation.watchlist.WatchlistFragment
-import java.lang.IllegalStateException
 
 class HomeViewPagerAdapter(fm: FragmentManager)
-    : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val fragmentList = listOf(
         NowPlayingFragment.newInstance(),
         WatchlistFragment.newInstance()
@@ -24,5 +22,5 @@ class HomeViewPagerAdapter(fm: FragmentManager)
         }
     }
 
-    override fun getItem(position: Int) = fragmentList[position] as Fragment
+    override fun getItem(position: Int) = fragmentList[position]
 }

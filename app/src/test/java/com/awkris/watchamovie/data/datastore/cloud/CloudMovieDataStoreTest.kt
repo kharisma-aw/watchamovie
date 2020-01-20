@@ -13,15 +13,13 @@ import com.awkris.watchamovie.testutils.RequestAssertionUtils
 import com.awkris.watchamovie.testutils.assertSuccessObserver
 import com.google.gson.Gson
 import io.reactivex.observers.TestObserver
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -71,13 +69,10 @@ class CloudMovieDataStoreTest : CloudDataStoreTest(), KoinTest {
     }
 
     @Test
-    fun `get now-playing movie list successfully (coroutine)`() {
+    fun `get now-playing movie list successfully (coroutine)`() = runBlocking {
         enqueueSuccessResponse("success/get/now_playing.json")
 
-        lateinit var result: PaginatedList<MovieResponse>
-        GlobalScope.launch {
-            result = cloudMovieDataStore.getNowPlayingListCoroutine("ID", 1)
-        }
+        val result = cloudMovieDataStore.getNowPlayingListCoroutine("ID", 1)
 
         RequestAssertionUtils(takeRequest()).run {
             assertRequestLine(RequestAssertionUtils.Method.GET, UrlConstants.NOW_PLAYING)
@@ -113,13 +108,10 @@ class CloudMovieDataStoreTest : CloudDataStoreTest(), KoinTest {
     }
 
     @Test
-    fun `search movie successfully (coroutine)`() {
+    fun `search movie successfully (coroutine)`() = runBlocking {
         enqueueSuccessResponse("success/get/now_playing.json")
 
-        lateinit var result: PaginatedList<MovieResponse>
-        GlobalScope.launch {
-            result = cloudMovieDataStore.searchMovieCoroutine("avengers", 1)
-        }
+        val result = cloudMovieDataStore.searchMovieCoroutine("avengers", 1)
 
         RequestAssertionUtils(takeRequest()).run {
             assertRequestLine(RequestAssertionUtils.Method.GET, UrlConstants.SEARCH_MOVIE)
@@ -158,14 +150,11 @@ class CloudMovieDataStoreTest : CloudDataStoreTest(), KoinTest {
     }
 
     @Test
-    fun `get movie detail successfully (coroutine)`() {
+    fun `get movie detail successfully (coroutine)`() = runBlocking {
         enqueueSuccessResponse("success/get/movie_detail.json")
 
         val movieId = 550
-        lateinit var result: MovieDetailResponse
-        GlobalScope.launch {
-            result = cloudMovieDataStore.getMovieDetailCoroutine(movieId)
-        }
+        val result = cloudMovieDataStore.getMovieDetailCoroutine(movieId)
 
         RequestAssertionUtils(takeRequest()).run {
             assertRequestLine(

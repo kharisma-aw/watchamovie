@@ -18,7 +18,6 @@ class SearchViewModel(private val dataSourceFactory: SearchDataSourceFactory) : 
         .setPageSize(20)
         .build()
 
-
     init {
         networkState = Transformations.switchMap(dataSourceFactory.getDataSource()) { dataSource ->
             dataSource.networkState
