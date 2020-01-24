@@ -25,7 +25,11 @@ class SearchViewModel(private val dataSourceFactory: SearchDataSourceFactory) : 
         searchList = LivePagedListBuilder(dataSourceFactory, pagedListConfig).build()
     }
 
-    fun search(keyword: String? = null, page: Int = 1) {
-        dataSourceFactory.recreate(keyword, page)
+    fun search(keyword: String? = null) {
+        dataSourceFactory.recreate(keyword)
+    }
+
+    fun invalidate() {
+        dataSourceFactory.invalidate()
     }
 }

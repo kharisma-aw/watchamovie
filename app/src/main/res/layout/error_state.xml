@@ -20,7 +20,7 @@
             android:paddingStart="@dimen/space_normal"
             android:text="@string/message.errorstate"
             android:textAlignment="center"
-            android:textSize="@dimen/fontsize_heading2"
+            android:textSize="@dimen/fontsize_heading4"
             />
 
         <ImageButton
