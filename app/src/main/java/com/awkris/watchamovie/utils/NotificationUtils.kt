@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
+import com.awkris.watchamovie.data.objectbox.MovieEntity
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.presentation.main.MainActivity
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
@@ -106,6 +107,15 @@ object NotificationUtils {
     ) {
         val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = createPendingIntent(context, movie.id, movie.title)
+        scheduleAlarm(movie.releaseDate, alarmIntent, alarmMgr)
+    }
+
+    fun scheduleAlarmsForReminder(
+        context: Context,
+        movie: MovieEntity
+    ) {
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = createPendingIntent(context, movie.id.toInt(), movie.title)
         scheduleAlarm(movie.releaseDate, alarmIntent, alarmMgr)
     }
 

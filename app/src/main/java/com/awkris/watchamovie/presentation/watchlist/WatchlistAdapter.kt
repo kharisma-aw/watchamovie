@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import com.awkris.watchamovie.R
-import com.awkris.watchamovie.data.room.entity.Movie
+import com.awkris.watchamovie.data.objectbox.MovieEntity
 import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.presentation.common.ItemMovieViewHolder
 
 class WatchlistAdapter :
-    PagedListAdapter<Movie, ItemMovieViewHolder>(Movie.DIFF_CALLBACK) {
+    PagedListAdapter<MovieEntity, ItemMovieViewHolder>(MovieEntity.DIFF_CALLBACK) {
     lateinit var itemMovieClickListener: ItemMovieClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemMovieViewHolder {

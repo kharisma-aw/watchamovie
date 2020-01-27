@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.response.MovieResponse
+import com.awkris.watchamovie.data.objectbox.MovieEntity
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.utils.Constants
 import com.squareup.picasso.Picasso
@@ -32,5 +33,16 @@ class ItemMovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.txt_movie_title.text = data.title
         itemView.txt_movie_overview.text = data.overview
         itemView.setOnClickListener { itemMovieClickListener.onItemClicked(data.id) }
+    }
+
+    fun bind(data: MovieEntity) {
+        Picasso.get()
+            .load(Constants.IMAGE_BASE_URL_500.format(data.posterPath))
+            .placeholder(R.drawable.placeholder)
+            .error(R.drawable.placeholder)
+            .into(itemView.img_movie_thumbnail)
+        itemView.txt_movie_title.text = data.title
+        itemView.txt_movie_overview.text = data.overview
+        itemView.setOnClickListener { itemMovieClickListener.onItemClicked(data.id.toInt()) }
     }
 }

@@ -6,7 +6,9 @@ import com.awkris.watchamovie.data.datastore.DiskMovieDataStore
 import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse
+import com.awkris.watchamovie.data.objectbox.MovieEntity
 import com.awkris.watchamovie.data.room.entity.Movie
+import io.objectbox.query.Query
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -63,7 +65,7 @@ class MovieDbRepository(
         return diskMovieDataStore.findMovie(id)
     }
 
-    suspend fun findMovieCoroutine(id: Int): Movie? {
+    suspend fun findMovieCoroutine(id: Int): MovieEntity? {
         return diskMovieDataStore.findMovieCoroutine(id)
     }
 
@@ -71,12 +73,12 @@ class MovieDbRepository(
         return diskMovieDataStore.getAllReminders()
     }
 
-    suspend fun getAllRemindersCoroutine(): List<Movie> {
+    suspend fun getAllRemindersCoroutine(): List<MovieEntity> {
         return diskMovieDataStore.getAllRemindersCoroutine()
     }
 
-    fun getWatchList(): DataSource.Factory<Int, Movie> {
-        return diskMovieDataStore.getWatchList()
+    fun getWatchList(): Query<MovieEntity> {
+        return diskMovieDataStore.getWatchListBox()
     }
 
     fun updateReminder(id: Int, setReminder: Boolean): Completable {

@@ -1,0 +1,99 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "2:3058215945785868169",
+      "lastPropertyId": "14:4143087546473472407",
+      "name": "MovieEntity",
+      "properties": [
+        {
+          "id": "1:3298187003105407541",
+          "name": "id"
+        },
+        {
+          "id": "2:607412586303842326",
+          "name": "adult"
+        },
+        {
+          "id": "3:3498220628273520755",
+          "name": "backdropPath"
+        },
+        {
+          "id": "4:3176386572649586627",
+          "name": "originalLanguage"
+        },
+        {
+          "id": "5:7235237280901887400",
+          "name": "originalTitle"
+        },
+        {
+          "id": "6:8529328917890848844",
+          "name": "overview"
+        },
+        {
+          "id": "7:9021438262915262909",
+          "name": "popularity"
+        },
+        {
+          "id": "8:1576099358621893655",
+          "name": "posterPath"
+        },
+        {
+          "id": "9:8769875757778378535",
+          "name": "releaseDate"
+        },
+        {
+          "id": "10:9006926741112528556",
+          "name": "title"
+        },
+        {
+          "id": "11:5142183413619962829",
+          "name": "video"
+        },
+        {
+          "id": "12:8893614585370042940",
+          "name": "voteAverage"
+        },
+        {
+          "id": "13:5596248127401354829",
+          "name": "voteCount"
+        },
+        {
+          "id": "14:4143087546473472407",
+          "name": "reminderState"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:3058215945785868169",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [
+    6028008345863196035
+  ],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    2940616441270085028,
+    5863729140907637554,
+    2207876279060608892,
+    3690700887384888151,
+    2237521780303602713,
+    1987782505802681377,
+    1018465897171732555,
+    8684215937028402247,
+    6433206065889266932,
+    5438523094472350210,
+    3107735612458081494,
+    2394571637598511,
+    3901402080822389122,
+    9112997653321368541
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.awkris.watchamovie.data.objectbox.MovieEntity
 import com.awkris.watchamovie.data.repository.MovieDbRepository
-import com.awkris.watchamovie.data.room.entity.Movie
+import io.objectbox.android.ObjectBoxDataSource
 
 class WatchlistViewModel(repository: MovieDbRepository) : ViewModel() {
-    private val watchList: LiveData<PagedList<Movie>>
-    private val dataSourceFactory = repository.getWatchList()
+    private val watchList: LiveData<PagedList<MovieEntity>>
+    private val query = repository.getWatchList()
 
     init {
         val pagedListConfig = PagedList.Config.Builder()
@@ -18,7 +19,10 @@ class WatchlistViewModel(repository: MovieDbRepository) : ViewModel() {
             .setPageSize(20)
             .build()
 
-        watchList = LivePagedListBuilder(dataSourceFactory, pagedListConfig).build()
+        watchList = LivePagedListBuilder(
+            ObjectBoxDataSource.Factory(query),
+            pagedListConfig
+        ).build()
     }
 
     fun getWatchList() = watchList

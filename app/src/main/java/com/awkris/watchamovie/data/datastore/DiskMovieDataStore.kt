@@ -3,22 +3,43 @@ package com.awkris.watchamovie.data.datastore
 import androidx.paging.DataSource
 import com.awkris.watchamovie.data.api.utils.log
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
+import com.awkris.watchamovie.data.objectbox.MovieEntity
+import com.awkris.watchamovie.data.objectbox.MovieEntity_
 import com.awkris.watchamovie.data.room.MovieDatabase
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.data.room.mapper.transform
+import io.objectbox.Box
+import io.objectbox.BoxStore
+import io.objectbox.kotlin.boxFor
+import io.objectbox.query.Query
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import org.koin.core.KoinComponent
+import timber.log.Timber
 
-class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
+
+class DiskMovieDataStore(
+    private val db: MovieDatabase,
+    objectBox: BoxStore,
+    private val movieBox: Box<MovieEntity> = objectBox.boxFor()
+) : KoinComponent {
+
     fun saveToWatchlist(movie: MovieDetailResponse): Completable {
         return db.movieDao().insert(transform(movie))
             .doOnError(::log)
     }
 
     suspend fun saveToWatchlistCoroutine(movie: MovieDetailResponse): Long {
-        return db.movieDao().insertCoroutine(transform(movie))
+        if (movieBox.get(movie.id.toLong()) == null) {
+            movieBox.put(movie.transform())
+        }
+        with(movieBox.get(movie.id.toLong())) {
+            Timber.d("saved movie item with:\n" +
+                    "id: $id\n" +
+                    "title: $title")
+        }
+        return if (movieBox.get(movie.id.toLong()) != null) 1 else 0
     }
 
     fun deleteMovie(id: Int): Completable {
@@ -27,7 +48,8 @@ class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
     }
 
     suspend fun deleteMovieById(id: Int): Int {
-        return db.movieDao().deleteByIdCoroutine(id)
+        movieBox.remove(id.toLong())
+        return if (movieBox.get(id.toLong()) == null) 1 else 0
     }
 
     fun findMovie(id: Int): Maybe<Movie> {
@@ -35,8 +57,8 @@ class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
             .doOnError(::log)
     }
 
-    suspend fun findMovieCoroutine(id: Int): Movie? {
-        return db.movieDao().getMovieCoroutine(id)
+    suspend fun findMovieCoroutine(id: Int): MovieEntity? {
+        return movieBox.get(id.toLong())
     }
 
     fun getAllReminders(): Single<List<Movie>> {
@@ -44,12 +66,18 @@ class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
             .doOnError(::log)
     }
 
-    suspend fun getAllRemindersCoroutine(): List<Movie> {
-        return db.movieDao().getAllRemindersCoroutine()
+    suspend fun getAllRemindersCoroutine(): List<MovieEntity> {
+        return movieBox.query().equal(MovieEntity_.reminderState, true)
+            .build()
+            .find()
     }
 
     fun getWatchList(): DataSource.Factory<Int, Movie> {
         return db.movieDao().getWatchList()
+    }
+
+    fun getWatchListBox(): Query<MovieEntity> {
+        return movieBox.query().build()
     }
 
     fun updateReminder(id: Int, setReminder: Boolean): Completable {
@@ -57,6 +85,10 @@ class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
     }
 
     suspend fun updateReminderCoroutine(id: Int, setReminder: Boolean): Int {
-        return db.movieDao().updateReminderCoroutine(id, setReminder)
+        val updatedItem = movieBox.get(id.toLong()).apply {
+            reminderState = setReminder
+        }
+        movieBox.put(updatedItem)
+        return if (movieBox.get(id.toLong()).reminderState == setReminder) 1 else 0
     }
 }
