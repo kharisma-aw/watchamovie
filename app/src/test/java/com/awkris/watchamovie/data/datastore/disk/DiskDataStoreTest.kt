@@ -17,8 +17,6 @@ abstract class DiskDataStoreTest {
     @Mock
     lateinit var db: MovieDatabase
     @Mock
-    lateinit var boxStore: BoxStore
-    @Mock
     lateinit var box: Box<MovieEntity>
     @Mock
     lateinit var movieDao: MovieDao_Impl
@@ -26,7 +24,7 @@ abstract class DiskDataStoreTest {
 
     @Before
     open fun setUp() {
-        diskDataStore = DiskMovieDataStore(db, boxStore, box)
+        diskDataStore = DiskMovieDataStore(db, box)
         whenever(db.movieDao()).thenReturn(movieDao)
     }
 }
