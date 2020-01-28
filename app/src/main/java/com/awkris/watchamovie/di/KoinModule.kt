@@ -5,6 +5,7 @@ import com.awkris.watchamovie.data.api.MovieDbApi
 import com.awkris.watchamovie.data.api.utils.ApiFactory
 import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.datastore.DiskMovieDataStore
+import com.awkris.watchamovie.data.objectbox.MovieEntity
 import com.awkris.watchamovie.data.objectbox.MyObjectBox
 import com.awkris.watchamovie.data.repository.MovieDbRepository
 import com.awkris.watchamovie.data.room.MovieDatabase
@@ -47,6 +48,7 @@ val dataStoreModule = module {
         MyObjectBox.builder()
             .androidContext(androidContext())
             .build()
+            .boxFor(MovieEntity::class.java)
     }
     single {
         Room.databaseBuilder(

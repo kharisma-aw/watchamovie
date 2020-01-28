@@ -21,8 +21,7 @@ import timber.log.Timber
 
 class DiskMovieDataStore(
     private val db: MovieDatabase,
-    objectBox: BoxStore,
-    private val movieBox: Box<MovieEntity> = objectBox.boxFor()
+    private val movieBox: Box<MovieEntity>
 ) : KoinComponent {
 
     fun saveToWatchlist(movie: MovieDetailResponse): Completable {
