@@ -2,13 +2,11 @@ package com.awkris.watchamovie.presentation.moviedetail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository
 import com.awkris.watchamovie.presentation.base.BaseViewModel
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MovieDetailViewModel(private val repository: MovieDbRepository) : BaseViewModel() {

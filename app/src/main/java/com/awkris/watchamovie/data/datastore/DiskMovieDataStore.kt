@@ -9,8 +9,6 @@ import com.awkris.watchamovie.data.room.MovieDatabase
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.data.room.mapper.transform
 import io.objectbox.Box
-import io.objectbox.BoxStore
-import io.objectbox.kotlin.boxFor
 import io.objectbox.query.Query
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -29,7 +27,7 @@ class DiskMovieDataStore(
             .doOnError(::log)
     }
 
-    suspend fun saveToWatchlistCoroutine(movie: MovieDetailResponse): Long {
+    fun saveToWatchlistCoroutine(movie: MovieDetailResponse): Long {
         if (movieBox.get(movie.id.toLong()) == null) {
             movieBox.put(movie.transform())
         }
@@ -46,7 +44,7 @@ class DiskMovieDataStore(
             .doOnError(::log)
     }
 
-    suspend fun deleteMovieById(id: Int): Int {
+    fun deleteMovieById(id: Int): Int {
         movieBox.remove(id.toLong())
         return if (movieBox.get(id.toLong()) == null) 1 else 0
     }
@@ -56,7 +54,7 @@ class DiskMovieDataStore(
             .doOnError(::log)
     }
 
-    suspend fun findMovieCoroutine(id: Int): MovieEntity? {
+    fun findMovieCoroutine(id: Int): MovieEntity? {
         return movieBox.get(id.toLong())
     }
 
@@ -65,7 +63,7 @@ class DiskMovieDataStore(
             .doOnError(::log)
     }
 
-    suspend fun getAllRemindersCoroutine(): List<MovieEntity> {
+    fun getAllRemindersCoroutine(): List<MovieEntity> {
         return movieBox.query().equal(MovieEntity_.reminderState, true)
             .build()
             .find()
@@ -83,7 +81,7 @@ class DiskMovieDataStore(
         return db.movieDao().updateReminder(id, setReminder)
     }
 
-    suspend fun updateReminderCoroutine(id: Int, setReminder: Boolean): Int {
+    fun updateReminderCoroutine(id: Int, setReminder: Boolean): Int {
         val updatedItem = movieBox.get(id.toLong()).apply {
             reminderState = setReminder
         }

@@ -1,6 +1,5 @@
 package com.awkris.watchamovie.data.repository
 
-import androidx.paging.DataSource
 import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.datastore.DiskMovieDataStore
 import com.awkris.watchamovie.data.model.PaginatedList
@@ -49,7 +48,7 @@ class MovieDbRepository(
         return diskMovieDataStore.saveToWatchlist(movie)
     }
 
-    suspend fun saveToWatchlistCoroutine(movie: MovieDetailResponse): Long {
+    fun saveToWatchlistCoroutine(movie: MovieDetailResponse): Long {
         return diskMovieDataStore.saveToWatchlistCoroutine(movie)
     }
 
@@ -57,7 +56,7 @@ class MovieDbRepository(
         return diskMovieDataStore.deleteMovie(id)
     }
 
-    suspend fun deleteMovieById(id: Int): Int {
+    fun deleteMovieById(id: Int): Int {
         return diskMovieDataStore.deleteMovieById(id)
     }
 
@@ -65,7 +64,7 @@ class MovieDbRepository(
         return diskMovieDataStore.findMovie(id)
     }
 
-    suspend fun findMovieCoroutine(id: Int): MovieEntity? {
+    fun findMovieCoroutine(id: Int): MovieEntity? {
         return diskMovieDataStore.findMovieCoroutine(id)
     }
 
@@ -73,7 +72,7 @@ class MovieDbRepository(
         return diskMovieDataStore.getAllReminders()
     }
 
-    suspend fun getAllRemindersCoroutine(): List<MovieEntity> {
+    fun getAllRemindersCoroutine(): List<MovieEntity> {
         return diskMovieDataStore.getAllRemindersCoroutine()
     }
 
@@ -85,7 +84,7 @@ class MovieDbRepository(
         return diskMovieDataStore.updateReminder(id, setReminder)
     }
 
-    suspend fun updateReminderCoroutine(id: Int, setReminder: Boolean): Int {
+    fun updateReminderCoroutine(id: Int, setReminder: Boolean): Int {
         return diskMovieDataStore.updateReminderCoroutine(id, setReminder)
     }
 }
