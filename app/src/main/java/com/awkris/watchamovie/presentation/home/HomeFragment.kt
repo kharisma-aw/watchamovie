@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.presentation.main.FragmentListener
 import kotlinx.android.synthetic.main.fragment_viewpager.*
@@ -42,7 +41,7 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_search -> {
-                findNavController().navigate(R.id.searchFragment)
+                fragmentListener.navigateToSearch()
                 true
             }
             else -> super.onOptionsItemSelected(item)

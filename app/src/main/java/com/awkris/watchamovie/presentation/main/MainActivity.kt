@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
-import com.awkris.watchamovie.presentation.search.SearchFragment
 
 
 class MainActivity : AppCompatActivity(), FragmentListener {
@@ -32,17 +31,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     }
 
     override fun navigateToSearch() {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction
-            .add(
-                R.id.nav_host_fragment,
-                SearchFragment.newInstance(),
-                SEARCH_TAG
-            )
-            .hide(currentFragment!!)
-            .addToBackStack(SEARCH_TAG)
-            .commit()
+        findNavController(R.id.nav_host_fragment).navigate(R.id.searchFragment)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -50,8 +39,6 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     }
 
     companion object {
-        private const val SEARCH_TAG = "SEARCH_TAG"
-
         fun newIntent(context: Context, movieId: Int): Intent {
             return Intent(context, MainActivity::class.java).apply {
                 putExtra(MovieDetailFragment.MOVIE_ID, movieId)

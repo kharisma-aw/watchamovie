@@ -57,7 +57,6 @@ class WatchlistFragment : Fragment() {
     }
 
     companion object {
-        const val TAG = "WATCHLIST_TAG"
         fun newInstance() = WatchlistFragment()
     }
 }

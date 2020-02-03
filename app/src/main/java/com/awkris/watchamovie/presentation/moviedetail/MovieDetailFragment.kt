@@ -40,29 +40,30 @@ class MovieDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         movieId = requireNotNull(arguments).getInt(MOVIE_ID)
 
         setObserver()
         btn_retry.setOnClickListener { viewModel.onScreenCreated(movieId) }
         viewModel.onScreenCreated(movieId)
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
         inflater.inflate(R.menu.menu_detail, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        viewModel.isInWatchlist().observe(
+        viewModel.isInWatchlist.observe(
             viewLifecycleOwner,
             Observer<Boolean> { inWatchlist ->
                 toggleAddWatchlistVisibility(!inWatchlist)
                 if (inWatchlist) {
-                    toggleAddReminderVisibility(!(viewModel.isReminderEnabled().value ?: false))
-                    viewModel.isReminderEnabled().observe(
+                    toggleAddReminderVisibility(!(viewModel.isReminderEnabled.value ?: false))
+                    viewModel.isReminderEnabled.observe(
                         viewLifecycleOwner,
                         Observer<Boolean> { enabled ->
                             toggleAddReminderVisibility(if (enabled != null) !enabled else null)
@@ -119,7 +120,7 @@ class MovieDetailFragment : Fragment() {
             }
         )
 
-        viewModel.getNetworkState().observe(
+        viewModel.networkState.observe(
             viewLifecycleOwner,
             Observer {
                 when (it) {
@@ -181,10 +182,11 @@ class MovieDetailFragment : Fragment() {
             } else {
                 txt_tagline.text = String.format("\"%s\"", tagline)
             }
-//            txt_rating.text = voteAverage.toString()
-//            txt_airtime.text = runtime.toString()
-//            txt_release_date.text = releaseDate
-            txt_overview_content.text = if (overview.isNullOrEmpty()) "No overview" else overview
+            txt_overview_content.text = if (overview.isNullOrEmpty()) {
+                "No overview provided"
+            } else {
+                overview
+            }
         }
     }
 

@@ -14,8 +14,12 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 
 class MovieDetailViewModel(private val repository: MovieDbRepository) : BaseViewModel() {
-    private val isInWatchlist: MutableLiveData<Boolean> = MutableLiveData()
-    private val isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
+    private val _isInWatchlist: MutableLiveData<Boolean> = MutableLiveData()
+    val isInWatchlist: LiveData<Boolean> = _isInWatchlist
+
+    private val _isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
+    val isReminderEnabled: LiveData<Boolean> = _isReminderEnabled
+
     private val movieDetail = MutableLiveData<MovieDetailResponse>()
     private val recommendations = MutableLiveData<List<MovieResponse>>()
     private val casts = MutableLiveData<List<Cast>>()
@@ -39,7 +43,9 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : BaseView
     }
     val movieDetailWithRecommendations: LiveData<MovieDetail> = _movieDetailWithRecommendations
 
-    private val networkState: MutableLiveData<NetworkState> = MutableLiveData()
+    private val _networkState: MutableLiveData<NetworkState> = MutableLiveData()
+    val networkState: LiveData<NetworkState> = _networkState
+
     private val disposable = CompositeDisposable()
 
     fun onScreenCreated(movieId: Int) {
@@ -52,24 +58,12 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : BaseView
         if (!disposable.isDisposed) disposable.dispose()
     }
 
-    fun isInWatchlist(): LiveData<Boolean> {
-        return isInWatchlist
-    }
-
-    fun isReminderEnabled(): LiveData<Boolean> {
-        return isReminderEnabled
-    }
-
-    fun getNetworkState(): LiveData<NetworkState> {
-        return networkState
-    }
-
     fun deleteFromWatchlist(movieId: Int) {
         scope.launch {
             val result = repository.deleteMovieById(movieId)
             if (result == 1) {
-                isInWatchlist.postValue(false)
-                isReminderEnabled.postValue(null)
+                _isInWatchlist.postValue(false)
+                _isReminderEnabled.postValue(null)
             }
         }
     }
@@ -79,9 +73,9 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : BaseView
             val rowId = repository.saveToWatchlistCoroutine(
                 requireNotNull(movieDetail.value)
             )
-            if (rowId != null && rowId > 0) {
-                isInWatchlist.postValue(true)
-                isReminderEnabled.postValue(false)
+            if (rowId > 0) {
+                _isInWatchlist.postValue(true)
+                _isReminderEnabled.postValue(false)
             }
         }
     }
@@ -90,25 +84,25 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : BaseView
         scope.launch {
             val result = repository.updateReminderCoroutine(movieId, setReminder)
             if (result == 1) {
-                isReminderEnabled.postValue(setReminder)
+                _isReminderEnabled.postValue(setReminder)
             }
         }
     }
 
     private fun getMovieDetail(movieId: Int) {
         scope.launch {
-            networkState.postValue(NetworkState.Loading)
+            _networkState.postValue(NetworkState.Loading)
             movieDetail.postValue(repository.getMovieDetailCoroutine(movieId))
             recommendations.postValue(repository.getRecommendations(movieId))
             casts.postValue(repository.getCredits(movieId).casts)
-            networkState.postValue(NetworkState.Success)
+            _networkState.postValue(NetworkState.Success)
         }
     }
 
     private fun findMovie(movieId: Int) {
         scope.launch {
             val movie = repository.findMovieCoroutine(movieId)
-            isInWatchlist.postValue(movie != null)
+            _isInWatchlist.postValue(movie != null)
         }
     }
 }

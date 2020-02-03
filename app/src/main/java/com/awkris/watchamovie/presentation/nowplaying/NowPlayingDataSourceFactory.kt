@@ -18,7 +18,7 @@ class NowPlayingDataSourceFactory : DataSource.Factory<Int, MovieResponse>(), Ko
     }
 
     fun recreate() {
-        nowPlayingDataSource.invalidate()
+        if (this::nowPlayingDataSource.isInitialized) nowPlayingDataSource.invalidate()
         create()
     }
 
