@@ -1,106 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
-    <include layout="@layout/error_state"/>
+    <include layout="@layout/error_state" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:id="@+id/movie_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
         >
 
-        <ImageView
-            android:id="@+id/img_backdrop"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintHeight_percent="0.35"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            android:layout_height="match_parent"
+            >
 
-        <ImageView
-            android:id="@+id/img_poster"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="@dimen/space_normal"
-            android:scaleType="centerCrop"
-            app:layout_constraintDimensionRatio="3:4"
-            app:layout_constraintHeight_percent="0.26"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline"
-            />
+            <FrameLayout
+                android:id="@+id/img_backdrop_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="19:9"
+                app:layout_constraintTop_toTopOf="parent"
+                >
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.22"
-            />
+                <ImageView
+                    android:id="@+id/img_backdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    />
 
-        <TextView
-            android:id="@+id/txt_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/space_normal"
-            android:layout_marginStart="@dimen/space_normal"
-            android:layout_marginTop="@dimen/space_small"
-            android:textSize="@dimen/fontsize_heading3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/img_poster"
-            app:layout_constraintTop_toBottomOf="@id/img_backdrop"
-            tools:text="Star Wars: The Rise of Skywalker"
-            />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/gradient_tint_black"
+                    />
 
-        <TextView
-            android:id="@+id/txt_overview_header"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_normal"
-            android:text="@string/title.section.overview"
-            android:textSize="@dimen/fontsize_heading4"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/barrier"
-            />
+            </FrameLayout>
 
-        <TextView
-            android:id="@+id/txt_overview_content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_normal"
-            android:layout_marginTop="@dimen/space_small"
-            android:layout_marginEnd="@dimen/space_normal"
-            android:textSize="@dimen/fontsize_small"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_overview_header"
-            tools:text="The surviving Resistance faces the First Order once again as the journey of Rey, Finn and Poe Dameron continues. With the power and knowledge of generations behind them, the final battle begins."
-            />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/top_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_oval_bottom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_backdrop_container"
+                >
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="img_poster,txt_title"
-            tools:layout_editor_absoluteY="731dp"
-            />
+                <TextView
+                    android:id="@+id/txt_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/space_normal"
+                    android:textSize="@dimen/fontsize_heading3"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Star Wars: The Rise of Skywalker"
+                    />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/txt_genres"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_large"
+                    android:layout_marginHorizontal="@dimen/space_normal"
+                    android:textSize="@dimen/fontsize_small"
+                    android:textStyle="italic"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_title"
+                    tools:text="Romance, Comedy, Family"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--            <TextView-->
+<!--                android:id="@+id/txt_rating"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="@dimen/space_normal"-->
+<!--                android:layout_marginTop="@dimen/space_normal"-->
+<!--                android:drawableStart="@drawable/ic_star_yellow_24dp"-->
+<!--                android:drawablePadding="@dimen/space_xsmall"-->
+<!--                android:text="@string/title.section.overview"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textSize="@dimen/fontsize_normal"-->
+<!--                app:layout_constraintHorizontal_chainStyle="packed"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/txt_airtime"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/top_section"-->
+<!--                />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/txt_airtime"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/space_normal"-->
+<!--                android:text="@string/title.section.overview"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textSize="@dimen/fontsize_normal"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/txt_release_date"-->
+<!--                app:layout_constraintStart_toEndOf="@id/txt_rating"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/top_section"-->
+<!--                />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/txt_release_date"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginEnd="@dimen/space_normal"-->
+<!--                android:layout_marginTop="@dimen/space_normal"-->
+<!--                android:text="@string/title.section.overview"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textSize="@dimen/fontsize_normal"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toEndOf="@id/txt_airtime"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/top_section"-->
+<!--                />-->
+
+<!--            <androidx.constraintlayout.widget.Barrier-->
+<!--                android:id="@+id/barrier"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:barrierDirection="bottom"-->
+<!--                app:constraint_referenced_ids="txt_rating,txt_airtime,txt_release_date"-->
+<!--                />-->
+
+            <TextView
+                android:id="@+id/txt_tagline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_normal"
+                android:textSize="@dimen/fontsize_normal"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_section"
+                />
+
+            <TextView
+                android:id="@+id/txt_overview_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_normal"
+                android:text="@string/title.section.overview"
+                android:textSize="@dimen/fontsize_normal"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_tagline"
+                />
+
+            <TextView
+                android:id="@+id/txt_overview_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_normal"
+                android:layout_marginTop="@dimen/space_small"
+                android:layout_marginEnd="@dimen/space_normal"
+                android:lineSpacingMultiplier="1.35"
+                android:textSize="@dimen/fontsize_small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_overview_header"
+                tools:text="The surviving Resistance faces the First Order once again as the journey of Rey, Finn and Poe Dameron continues. With the power and knowledge of generations behind them, the final battle begins."
+                />
+
+            <TextView
+                android:id="@+id/txt_casts_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_normal"
+                android:text="@string/title.section.casts"
+                android:textSize="@dimen/fontsize_normal"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_overview_content"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_casts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_casts_header"
+                />
+
+            <TextView
+                android:id="@+id/txt_recommendations_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_normal"
+                android:text="@string/title.section.recommendations"
+                android:textSize="@dimen/fontsize_normal"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rcv_casts"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_recommendations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_recommendations_header"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
 
 </FrameLayout>

@@ -15,7 +15,7 @@ class WatchlistAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemMovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ItemMovieViewHolder(
-            inflater.inflate(R.layout.item_movie, parent, false)
+            inflater.inflate(R.layout.item_movie_list, parent, false)
         ).also { it.itemMovieClickListener = itemMovieClickListener }
     }
 

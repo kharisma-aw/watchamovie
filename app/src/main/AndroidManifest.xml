@@ -11,7 +11,7 @@
         android:name=".WatchAMovie"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Platform.MaterialComponents"
         android:usesCleartextTraffic="true"
         >
         <uses-library
@@ -28,15 +28,15 @@
             />
         <activity
             android:name=".presentation.main.MainActivity"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".receiver.AlarmReceiver" />
-        <receiver android:name=".receiver.BootReceiver">
+        <receiver android:name="com.awkris.watchamovie.utils.receiver.AlarmReceiver" />
+        <receiver android:name="com.awkris.watchamovie.utils.receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

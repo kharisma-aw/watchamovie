@@ -26,5 +26,9 @@
     <fragment
         android:id="@+id/movieDetailFragment"
         android:name="com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment"
-        android:label="MovieDetailFragment" />
+        android:label="MovieDetailFragment" >
+        <action
+            android:id="@+id/action_movieDetailFragment_self"
+            app:destination="@id/movieDetailFragment" />
+    </fragment>
 </navigation>

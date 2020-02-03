@@ -1,4 +1,4 @@
-package com.awkris.watchamovie.receiver
+package com.awkris.watchamovie.utils.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

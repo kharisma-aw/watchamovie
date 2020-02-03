@@ -2,7 +2,7 @@ package com.awkris.watchamovie.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class SearchMovieResponse (
+data class MovieListGeneralResponse (
     @SerializedName("page")
     val page: Int,
     @SerializedName("total_pages")

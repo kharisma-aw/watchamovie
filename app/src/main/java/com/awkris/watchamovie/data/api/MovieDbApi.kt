@@ -1,9 +1,10 @@
 package com.awkris.watchamovie.data.api
 
 import com.awkris.watchamovie.data.api.utils.UrlConstants
+import com.awkris.watchamovie.data.model.response.CreditsResponse
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
+import com.awkris.watchamovie.data.model.response.MovieListGeneralResponse
 import com.awkris.watchamovie.data.model.response.NowPlayingResponse
-import com.awkris.watchamovie.data.model.response.SearchMovieResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -26,13 +27,13 @@ interface MovieDbApi {
     fun searchMovie(@Query("api_key") apiKey: String,
                     @Query("query") query: String,
                     @Query("page") page: Int?
-    ): Single<SearchMovieResponse>
+    ): Single<MovieListGeneralResponse>
 
     @GET(UrlConstants.SEARCH_MOVIE)
     suspend fun searchMovieCoroutine(@Query("api_key") apiKey: String,
                                      @Query("query") query: String,
                                      @Query("page") page: Int?
-    ): SearchMovieResponse
+    ): MovieListGeneralResponse
 
     @GET(UrlConstants.MOVIE_DETAIL)
     fun getMovieDetail(@Path("movie_id") movieId: Int,
@@ -43,4 +44,14 @@ interface MovieDbApi {
     suspend fun getMovieDetailCoroutine(@Path("movie_id") movieId: Int,
                                         @Query("api_key") apiKey: String
     ): MovieDetailResponse
+
+    @GET(UrlConstants.RECOMMENDATIONS)
+    suspend fun getRecommendations(@Path("movie_id") movieId: Int,
+                                   @Query("api_key") apiKey: String
+    ): MovieListGeneralResponse
+
+    @GET(UrlConstants.CREDITS)
+    suspend fun getCredits(@Path("movie_id") movieId: Int,
+                           @Query("api_key") apiKey: String
+    ): CreditsResponse
 }

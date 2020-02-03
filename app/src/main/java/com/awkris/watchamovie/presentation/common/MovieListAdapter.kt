@@ -29,7 +29,7 @@ class MovieListAdapter :
                 inflater.inflate(R.layout.item_loading, parent, false)
             )
             ItemType.ItemMovie.ordinal -> ItemMovieViewHolder(
-                inflater.inflate(R.layout.item_movie, parent, false)
+                inflater.inflate(R.layout.item_movie_list, parent, false)
             ).also { it.itemMovieClickListener = itemMovieClickListener }
             else -> throw UnsupportedOperationException("There's no such item type!!")
         }

@@ -14,23 +14,21 @@ class ItemMovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(data: MovieResponse) {
         Picasso.get()
-            .load(Constants.IMAGE_BASE_URL_500.format(data.posterPath))
+            .load(Constants.IMAGE_BASE_URL_500.format(data.backdropPath))
             .placeholder(R.drawable.placeholder)
             .error(R.drawable.placeholder)
             .into(itemView.img_movie_thumbnail)
         itemView.txt_movie_title.text = data.title
-        itemView.txt_movie_overview.text = data.overview
         itemView.setOnClickListener { itemMovieClickListener.onItemClicked(data.id) }
     }
 
     fun bind(data: Movie) {
         Picasso.get()
-            .load(Constants.IMAGE_BASE_URL_500.format(data.posterPath))
+            .load(Constants.IMAGE_BASE_URL_500.format(data.backdropPath))
             .placeholder(R.drawable.placeholder)
             .error(R.drawable.placeholder)
             .into(itemView.img_movie_thumbnail)
         itemView.txt_movie_title.text = data.title
-        itemView.txt_movie_overview.text = data.overview
         itemView.setOnClickListener { itemMovieClickListener.onItemClicked(data.id) }
     }
 }

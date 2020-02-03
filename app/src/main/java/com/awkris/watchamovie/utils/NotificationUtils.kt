@@ -14,7 +14,7 @@ import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.presentation.main.MainActivity
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
-import com.awkris.watchamovie.receiver.AlarmReceiver
+import com.awkris.watchamovie.utils.receiver.AlarmReceiver
 import java.util.*
 
 object NotificationUtils {

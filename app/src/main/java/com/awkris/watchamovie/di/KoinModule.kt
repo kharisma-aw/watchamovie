@@ -19,9 +19,9 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewmodelModule = module {
-    single { SearchDataSourceFactory() }
+    factory { SearchDataSourceFactory() }
     single { NowPlayingDataSourceFactory() }
-    single { NowPlayingDataSource(get()) }
+    factory { NowPlayingDataSource(get()) }
 
     viewModel { MovieDetailViewModel(get()) }
     viewModel { NowPlayingViewModel(get()) }

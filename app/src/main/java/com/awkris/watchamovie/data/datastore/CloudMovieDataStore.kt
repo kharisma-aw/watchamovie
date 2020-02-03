@@ -4,6 +4,7 @@ import com.awkris.watchamovie.BuildConfig
 import com.awkris.watchamovie.data.api.MovieDbApi
 import com.awkris.watchamovie.data.api.utils.log
 import com.awkris.watchamovie.data.model.PaginatedList
+import com.awkris.watchamovie.data.model.response.CreditsResponse
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse
 import io.reactivex.Single
@@ -50,6 +51,14 @@ class CloudMovieDataStore(private val movieDbApi: MovieDbApi) : KoinComponent {
         return with(response) {
             PaginatedList(movieList.filterNotNull(), this.page, totalPages, totalResults)
         }
+    }
+
+    suspend fun getRecommendations(movieId: Int): List<MovieResponse> {
+        return movieDbApi.getRecommendations(movieId, KEY).movieList
+    }
+
+    suspend fun getCredits(movieId: Int): CreditsResponse {
+        return movieDbApi.getCredits(movieId, KEY)
     }
 
     companion object {

@@ -6,7 +6,9 @@
     <string name="notification.release.content">%s is out today. Head out to nearest movie.</string>
 
     <string name="message.errorstate">There\'s a problem with the connection.</string>
+    <string name="title.section.casts">Casts</string>
     <string name="title.section.overview">Overview</string>
+    <string name="title.section.recommendations">Recommendations</string>
     <string name="title.movie.format"><em>%s</em> (<i>%s</i>)</string>
     <string name="text.button.addtowatchlist">Add to Watchlist</string>
     <string name="toolbar.menu.search">Search</string>

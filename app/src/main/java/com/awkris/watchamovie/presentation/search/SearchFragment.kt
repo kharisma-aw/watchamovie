@@ -42,7 +42,7 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        swipe_refresh.setOnRefreshListener { viewModel.search() }
+        swipe_refresh.setOnRefreshListener { viewModel.search(srv_movie.query.toString()) }
         initRecyclerView()
 
         srv_movie.setOnQueryTextListener(
@@ -83,7 +83,9 @@ class SearchFragment : Fragment() {
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
             adapter.networkState = it
             when (it) {
-                is NetworkState.Error, NetworkState.Success -> swipe_refresh.isRefreshing = false
+                is NetworkState.Error, NetworkState.Success -> {
+                    if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
+                }
             }
         })
 

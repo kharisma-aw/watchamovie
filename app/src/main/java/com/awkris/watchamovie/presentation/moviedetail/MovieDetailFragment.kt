@@ -6,9 +6,15 @@ import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.awkris.watchamovie.R
+import com.awkris.watchamovie.data.model.MovieDetail
 import com.awkris.watchamovie.data.model.NetworkState
+import com.awkris.watchamovie.data.model.response.Cast
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
+import com.awkris.watchamovie.data.model.response.MovieResponse
+import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.utils.Constants
 import com.awkris.watchamovie.utils.NotificationUtils
 import com.awkris.watchamovie.utils.formatReleaseYear
@@ -72,7 +78,7 @@ class MovieDetailFragment : Fragment() {
             R.id.menu_add_reminder -> {
                 NotificationUtils.scheduleAlarmsForReminder(
                     requireContext(),
-                    requireNotNull(viewModel.getMovieDetail().value)
+                    requireNotNull(viewModel.movieDetailWithRecommendations.value).movieDetail!!
                 )
                 viewModel.updateReminder(movieId, true)
                 true
@@ -80,7 +86,7 @@ class MovieDetailFragment : Fragment() {
             R.id.menu_delete_reminder -> {
                 NotificationUtils.deleteAlarmsForReminder(
                     requireContext(),
-                    requireNotNull(viewModel.getMovieDetail().value)
+                    requireNotNull(viewModel.movieDetailWithRecommendations.value).movieDetail!!
                 )
                 viewModel.updateReminder(movieId, false)
                 true
@@ -103,11 +109,13 @@ class MovieDetailFragment : Fragment() {
     }
 
     private fun setObserver() {
-        viewModel.getMovieDetail().observe(
+        viewModel.movieDetailWithRecommendations.observe(
             viewLifecycleOwner,
-            Observer<MovieDetailResponse> { t ->
+            Observer<MovieDetail> { t ->
                 showErrorState(false)
-                showMovieDetail(t!!)
+                t.movieDetail?.let { showMovieDetail(it) }
+                setRecommendations(t.recommendations)
+                setCasts(t.casts)
             }
         )
 
@@ -129,6 +137,29 @@ class MovieDetailFragment : Fragment() {
         )
     }
 
+    private fun setCasts(list: List<Cast>) {
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val adapter = CastAdapter(list)
+        rcv_casts.layoutManager = layoutManager
+        rcv_casts.adapter = adapter
+    }
+
+    private fun setRecommendations(list: List<MovieResponse>) {
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val adapter = RecommendationAdapter(list).apply {
+            itemMovieClickListener = object : ItemMovieClickListener {
+                override fun onItemClicked(id: Int) {
+                    findNavController().navigate(
+                        R.id.action_movieDetailFragment_self,
+                        createBundle(id)
+                    )
+                }
+            }
+        }
+        rcv_recommendations.layoutManager = layoutManager
+        rcv_recommendations.adapter = adapter
+    }
+
     private fun showMovieDetail(response: MovieDetailResponse) {
         movie_detail_container.visibility = View.VISIBLE
         with(response) {
@@ -137,17 +168,22 @@ class MovieDetailFragment : Fragment() {
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .into(img_backdrop)
-            Picasso.get()
-                .load(Constants.IMAGE_BASE_URL_500.format(posterPath))
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .into(img_poster)
             val title = Html.fromHtml(resources.getString(
                 R.string.title_movie_format,
                 title,
                 formatReleaseYear(releaseDate)
             )).toString()
             txt_title.text = title
+            val genrelist = genres.map { it.name.toLowerCase() }
+            txt_genres.text = genrelist.joinToString(", ")
+            if (tagline.isNullOrEmpty()) {
+                txt_tagline.visibility = View.GONE
+            } else {
+                txt_tagline.text = String.format("\"%s\"", tagline)
+            }
+//            txt_rating.text = voteAverage.toString()
+//            txt_airtime.text = runtime.toString()
+//            txt_release_date.text = releaseDate
             txt_overview_content.text = if (overview.isNullOrEmpty()) "No overview" else overview
         }
     }

@@ -5,4 +5,6 @@ object UrlConstants {
     const val MOVIE_DETAIL = "movie/{movie_id}"
     const val NOW_PLAYING = "movie/now_playing"
     const val SEARCH_MOVIE = "search/movie"
+    const val RECOMMENDATIONS = "movie/{movie_id}/recommendations"
+    const val CREDITS = "movie/{movie_id}/credits"
 }

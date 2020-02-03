@@ -4,6 +4,7 @@ import androidx.paging.DataSource
 import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.datastore.DiskMovieDataStore
 import com.awkris.watchamovie.data.model.PaginatedList
+import com.awkris.watchamovie.data.model.response.CreditsResponse
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse
 import com.awkris.watchamovie.data.room.entity.Movie
@@ -85,5 +86,13 @@ class MovieDbRepository(
 
     suspend fun updateReminderCoroutine(id: Int, setReminder: Boolean): Int {
         return diskMovieDataStore.updateReminderCoroutine(id, setReminder)
+    }
+
+    suspend fun getRecommendations(movieId: Int): List<MovieResponse> {
+        return cloudMovieDataStore.getRecommendations(movieId)
+    }
+
+    suspend fun getCredits(movieId: Int): CreditsResponse {
+        return cloudMovieDataStore.getCredits(movieId)
     }
 }
