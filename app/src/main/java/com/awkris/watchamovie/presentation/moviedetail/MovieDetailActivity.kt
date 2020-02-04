@@ -2,6 +2,8 @@ package com.awkris.watchamovie.presentation.moviedetail
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
 import android.view.Menu
@@ -10,12 +12,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.awkris.watchamovie.R
+import com.awkris.watchamovie.data.model.MovieDetailWithAdditionalInfo
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.utils.Constants
 import com.awkris.watchamovie.utils.NotificationUtils
 import com.awkris.watchamovie.utils.formatReleaseYear
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.error_state.*
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -46,13 +49,13 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        viewModel.isInWatchlist().observe(
+        viewModel.isInWatchlist.observe(
             this,
             Observer<Boolean> { inWatchlist ->
                 toggleAddWatchlistVisibility(!inWatchlist)
                 if (inWatchlist) {
-                    toggleAddReminderVisibility(!(viewModel.isReminderEnabled().value ?: false))
-                    viewModel.isReminderEnabled().observe(
+                    toggleAddReminderVisibility(!(viewModel.isReminderEnabled.value ?: false))
+                    viewModel.isReminderEnabled.observe(
                         this,
                         Observer<Boolean> { enabled ->
                             toggleAddReminderVisibility(if (enabled != null) !enabled else null)
@@ -69,7 +72,7 @@ class MovieDetailActivity : AppCompatActivity() {
             R.id.menu_add_reminder -> {
                 NotificationUtils.scheduleAlarmsForReminder(
                     this,
-                    requireNotNull(viewModel.getMovieDetail().value)
+                    requireNotNull(viewModel.movieDetail.value!!.movieDetail)
                 )
                 viewModel.updateReminder(movieId, true)
                 true
@@ -77,7 +80,7 @@ class MovieDetailActivity : AppCompatActivity() {
             R.id.menu_delete_reminder -> {
                 NotificationUtils.deleteAlarmsForReminder(
                     this,
-                    requireNotNull(viewModel.getMovieDetail().value)
+                    requireNotNull(viewModel.movieDetail.value!!.movieDetail)
                 )
                 viewModel.updateReminder(movieId, false)
                 true
@@ -100,15 +103,15 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun setObserver() {
-        viewModel.getMovieDetail().observe(
+        viewModel.movieDetail.observe(
             this,
-            Observer<MovieDetailResponse> { t ->
+            Observer<MovieDetailWithAdditionalInfo> { t ->
                 showErrorState(false)
-                showMovieDetail(t!!)
+                showMovieDetail(t!!.movieDetail)
             }
         )
 
-        viewModel.getNetworkState().observe(
+        viewModel.networkState.observe(
             this,
             Observer {
                 when (it) {
@@ -129,22 +132,32 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun showMovieDetail(response: MovieDetailResponse) {
         movie_detail_container.visibility = View.VISIBLE
         with(response) {
-            Picasso.get()
+            Glide.with(this@MovieDetailActivity)
                 .load(Constants.IMAGE_BASE_URL.format(backdropPath))
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
+                .centerCrop()
                 .into(img_backdrop)
-            Picasso.get()
-                .load(Constants.IMAGE_BASE_URL_500.format(posterPath))
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .into(img_poster)
-            val title = Html.fromHtml(resources.getString(
+            val title = resources.getString(
                 R.string.title_movie_format,
                 title,
                 formatReleaseYear(releaseDate)
-            )).toString()
-            txt_title.text = title
+            )
+            val whiteColor = Color.parseColor("#ffffff")
+            txt_title.apply {
+                text = title
+                setTextColor(whiteColor)
+            }
+            val genre = genres.joinToString(", ") { it.name }
+            txt_genres.apply {
+                text = genre
+                setTextColor(whiteColor)
+            }
+            if (tagline.isNullOrEmpty()) {
+                txt_tagline.visibility = View.GONE
+            } else {
+                txt_tagline.text = String.format("\" %s \"", tagline)
+            }
             txt_overview_content.text = if (overview.isNullOrEmpty()) "No overview" else overview
         }
     }

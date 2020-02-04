@@ -1,4 +1,4 @@
-package com.awkris.watchamovie.receiver
+package com.awkris.watchamovie.utils.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -23,9 +23,7 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
                 .subscribe(
                     object : SingleObserver<List<Movie>> {
                         override fun onSuccess(t: List<Movie>) {
-                            t.map {
-                                NotificationUtils.scheduleAlarmsForReminder(context, it)
-                            }
+                            t.map { NotificationUtils.scheduleAlarmsForReminder(context, it) }
                         }
 
                         override fun onSubscribe(d: Disposable) {
@@ -33,8 +31,8 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
 
                         override fun onError(e: Throwable) {
                             Timber.d("Error encountered:\n" +
-                                    "cause: ${e.cause}\n" +
-                                    "message: ${e.message}")
+                                    ">>cause: ${e.cause}\n" +
+                                    ">>message: ${e.message}")
                         }
 
                     }

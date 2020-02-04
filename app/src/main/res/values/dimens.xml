@@ -7,9 +7,13 @@
     <dimen name="space_xlarge">32dp</dimen>
     <dimen name="space_xxlarge">40dp</dimen>
     <dimen name="space_xxxlarge">48dp</dimen>
+    <dimen name="space_xxxxlarge">64dp</dimen>
 
+    <dimen name="fontsize_xsmall">12sp</dimen>
     <dimen name="fontsize_small">14sp</dimen>
     <dimen name="fontsize_normal">16sp</dimen>
-    <dimen name="fontsize_heading2">18sp</dimen>
-    <dimen name="fontsize_heading">20sp</dimen>
+    <dimen name="fontsize_heading4">18sp</dimen>
+    <dimen name="fontsize_heading3">20sp</dimen>
+    <dimen name="fontsize_heading2">24sp</dimen>
+    <dimen name="fontsize_heading1">28sp</dimen>
 </resources>

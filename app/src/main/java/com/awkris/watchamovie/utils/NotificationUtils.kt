@@ -14,24 +14,10 @@ import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.presentation.main.MainActivity
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailActivity
-import com.awkris.watchamovie.receiver.AlarmReceiver
+import com.awkris.watchamovie.utils.receiver.AlarmReceiver
 import java.util.*
 
 object NotificationUtils {
-    fun isReminderSet(context: Context, movieId: Int): Boolean {
-        val intent = Intent(context.applicationContext, AlarmReceiver::class.java).apply {
-            action = context.getString(R.string.action_movierelease_reminder)
-            type = "$movieId"
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            movieId,
-            intent,
-            PendingIntent.FLAG_NO_CREATE
-        )
-        return pendingIntent != null
-    }
-
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun createNotificationChannel(
         context: Context,

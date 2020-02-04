@@ -1,4 +1,4 @@
-package com.awkris.watchamovie.receiver
+package com.awkris.watchamovie.utils.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,9 +11,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null && intent != null && intent.action != null) {
-            if (intent.action!!.equals(context.getString(R.string.action_movierelease_reminder), ignoreCase = true)) {
-                if (intent.extras != null) {
-                    val bundle = checkNotNull(intent.extras)
+            if (intent.action.equals(context.getString(R.string.action_movierelease_reminder), true)) {
+                val bundle = intent.extras
+                if (bundle != null) {
                     val movieId = bundle.getInt(MovieDetailActivity.MOVIE_ID)
                     val movieTitle = bundle.getString(MovieDetailActivity.MOVIE_TITLE)
                     if (movieId != 0 && !movieTitle.isNullOrEmpty()) {

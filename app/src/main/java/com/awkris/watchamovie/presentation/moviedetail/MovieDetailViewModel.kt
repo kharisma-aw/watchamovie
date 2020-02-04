@@ -3,8 +3,8 @@ package com.awkris.watchamovie.presentation.moviedetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.awkris.watchamovie.data.model.MovieDetailWithAdditionalInfo
 import com.awkris.watchamovie.data.model.NetworkState
-import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository
 import com.awkris.watchamovie.data.room.entity.Movie
 import io.reactivex.CompletableObserver
@@ -16,10 +16,18 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewModel() {
-    private val isInWatchlist: MutableLiveData<Boolean> = MutableLiveData()
-    private val isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
-    private val movieDetail: MutableLiveData<MovieDetailResponse> = MutableLiveData()
-    private val networkState: MutableLiveData<NetworkState> = MutableLiveData()
+    private val _isInWatchlist: MutableLiveData<Boolean> = MutableLiveData()
+    val isInWatchlist: LiveData<Boolean> = _isInWatchlist
+
+    private val _isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
+    val isReminderEnabled: LiveData<Boolean> = _isReminderEnabled
+
+    private val _movieDetail: MutableLiveData<MovieDetailWithAdditionalInfo> = MutableLiveData()
+    val movieDetail: LiveData<MovieDetailWithAdditionalInfo> = _movieDetail
+
+    private val _networkState: MutableLiveData<NetworkState> = MutableLiveData()
+    val networkState: LiveData<NetworkState> = _networkState
+
     private val disposable = CompositeDisposable()
 
     fun onScreenCreated(movieId: Int) {
@@ -31,22 +39,6 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
         if (!disposable.isDisposed) disposable.dispose()
     }
 
-    fun isInWatchlist(): LiveData<Boolean> {
-        return isInWatchlist
-    }
-
-    fun isReminderEnabled(): LiveData<Boolean> {
-        return isReminderEnabled
-    }
-
-    fun getMovieDetail(): LiveData<MovieDetailResponse> {
-        return movieDetail
-    }
-
-    fun getNetworkState(): LiveData<NetworkState> {
-        return networkState
-    }
-
     fun deleteFromWatchlist(movieId: Int) {
         repository.deleteMovie(movieId)
             .subscribeOn(Schedulers.io())
@@ -54,8 +46,8 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
             .subscribe(
                 object : CompletableObserver {
                     override fun onComplete() {
-                        isInWatchlist.postValue(false)
-                        isReminderEnabled.postValue(null)
+                        _isInWatchlist.postValue(false)
+                        _isReminderEnabled.postValue(null)
                     }
 
                     override fun onSubscribe(d: Disposable) {
@@ -63,7 +55,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(NetworkState.Error(e.message))
                     }
 
                 }
@@ -71,14 +63,14 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     fun saveToWatchlist() {
-        repository.saveToWatchlist(requireNotNull(getMovieDetail().value))
+        repository.saveToWatchlist(movieDetail.value!!.movieDetail)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 object : CompletableObserver {
                     override fun onComplete() {
-                        isInWatchlist.postValue(true)
-                        isReminderEnabled.postValue(false)
+                        _isInWatchlist.postValue(true)
+                        _isReminderEnabled.postValue(false)
                     }
 
                     override fun onSubscribe(d: Disposable) {
@@ -86,7 +78,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(NetworkState.Error(e.message))
                     }
 
                 }
@@ -100,7 +92,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
             .subscribe(
                 object : CompletableObserver {
                     override fun onComplete() {
-                        isReminderEnabled.postValue(setReminder)
+                        _isReminderEnabled.postValue(setReminder)
                     }
 
                     override fun onSubscribe(d: Disposable) {
@@ -108,7 +100,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(NetworkState.Error(e.message))
                     }
 
                 }
@@ -116,23 +108,23 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     private fun getMovieDetail(movieId: Int) {
-        networkState.postValue(NetworkState.Loading)
-        repository.getMovieDetail(movieId)
+        _networkState.postValue(NetworkState.Loading)
+        repository.getMovieDetailWithAdditionalInfo(movieId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                object : SingleObserver<MovieDetailResponse> {
+                object : SingleObserver<MovieDetailWithAdditionalInfo> {
                     override fun onSubscribe(d: Disposable) {
                         disposable.add(d)
                     }
 
-                    override fun onSuccess(item: MovieDetailResponse) {
-                        networkState.postValue(NetworkState.Success)
-                        movieDetail.postValue(item)
+                    override fun onSuccess(item: MovieDetailWithAdditionalInfo) {
+                        _networkState.postValue(NetworkState.Success)
+                        _movieDetail.postValue(item)
                     }
 
                     override fun onError(error: Throwable) {
-                        networkState.postValue(NetworkState.Error(error.message))
+                        _networkState.postValue(NetworkState.Error(error.message))
                     }
                 }
             )
@@ -145,12 +137,12 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
             .subscribe(
                 object : MaybeObserver<Movie> {
                     override fun onSuccess(t: Movie) {
-                        isInWatchlist.postValue(true)
-                        isReminderEnabled.postValue(t.reminderState)
+                        _isInWatchlist.postValue(true)
+                        _isReminderEnabled.postValue(t.reminderState)
                     }
 
                     override fun onComplete() {
-                        isInWatchlist.postValue(false)
+                        _isInWatchlist.postValue(false)
                     }
 
                     override fun onSubscribe(d: Disposable) {
@@ -158,7 +150,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(NetworkState.Error(e.message))
                     }
                 }
             )

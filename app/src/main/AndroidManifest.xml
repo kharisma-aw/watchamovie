@@ -38,8 +38,8 @@
             android:name=".presentation.moviedetail.MovieDetailActivity"
             android:screenOrientation="portrait"
             />
-        <receiver android:name=".receiver.AlarmReceiver" />
-        <receiver android:name=".receiver.BootReceiver">
+        <receiver android:name="com.awkris.watchamovie.utils.receiver.AlarmReceiver" />
+        <receiver android:name="com.awkris.watchamovie.utils.receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

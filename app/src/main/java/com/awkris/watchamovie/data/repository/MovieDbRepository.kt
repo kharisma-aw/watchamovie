@@ -3,13 +3,16 @@ package com.awkris.watchamovie.data.repository
 import androidx.paging.DataSource
 import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.datastore.DiskMovieDataStore
+import com.awkris.watchamovie.data.model.MovieDetailWithAdditionalInfo
 import com.awkris.watchamovie.data.model.PaginatedList
+import com.awkris.watchamovie.data.model.response.Cast
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse
 import com.awkris.watchamovie.data.room.entity.Movie
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.functions.Function3
 import org.koin.core.KoinComponent
 
 class MovieDbRepository(
@@ -18,6 +21,22 @@ class MovieDbRepository(
 ) : KoinComponent{
     fun getMovieDetail(movieId: Int): Single<MovieDetailResponse> {
         return cloudMovieDataStore.getMovieDetail(movieId)
+    }
+
+    fun getMovieDetailWithAdditionalInfo(movieId: Int): Single<MovieDetailWithAdditionalInfo> {
+        return cloudMovieDataStore.let {
+            val movieDetail = it.getMovieDetail(movieId)
+            val casts = it.getCredits(movieId).map { response -> response.casts }
+            val recommendations = it.getRecommendations(movieId)
+            Single.zip(
+                movieDetail,
+                casts,
+                recommendations,
+                Function3<MovieDetailResponse, List<Cast>, List<MovieResponse>, MovieDetailWithAdditionalInfo> { t1, t2, t3 ->
+                    MovieDetailWithAdditionalInfo(t1, t2, t3)
+                }
+            )
+        }
     }
 
     fun getNowPlayingList(region: String, page: Int? = null): Single<PaginatedList<MovieResponse>> {
