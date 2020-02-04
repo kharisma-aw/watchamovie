@@ -3,6 +3,7 @@ package com.awkris.watchamovie.presentation.moviedetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.awkris.watchamovie.data.model.Event
 import com.awkris.watchamovie.data.model.MovieDetailWithAdditionalInfo
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.repository.MovieDbRepository
@@ -25,8 +26,8 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     private val _movieDetail: MutableLiveData<MovieDetailWithAdditionalInfo> = MutableLiveData()
     val movieDetail: LiveData<MovieDetailWithAdditionalInfo> = _movieDetail
 
-    private val _networkState: MutableLiveData<NetworkState> = MutableLiveData()
-    val networkState: LiveData<NetworkState> = _networkState
+    private val _networkState: MutableLiveData<Event<NetworkState>> = MutableLiveData()
+    val networkState: LiveData<Event<NetworkState>> = _networkState
 
     private val disposable = CompositeDisposable()
 
@@ -55,7 +56,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        _networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(Event(NetworkState.Error(e.message)))
                     }
 
                 }
@@ -78,7 +79,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        _networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(Event(NetworkState.Error(e.message)))
                     }
 
                 }
@@ -100,7 +101,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        _networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(Event(NetworkState.Error(e.message)))
                     }
 
                 }
@@ -108,7 +109,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
     }
 
     private fun getMovieDetail(movieId: Int) {
-        _networkState.postValue(NetworkState.Loading)
+        _networkState.postValue(Event(NetworkState.Loading))
         repository.getMovieDetailWithAdditionalInfo(movieId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -119,12 +120,12 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onSuccess(item: MovieDetailWithAdditionalInfo) {
-                        _networkState.postValue(NetworkState.Success)
+                        _networkState.postValue(Event(NetworkState.Success))
                         _movieDetail.postValue(item)
                     }
 
                     override fun onError(error: Throwable) {
-                        _networkState.postValue(NetworkState.Error(error.message))
+                        _networkState.postValue(Event(NetworkState.Error(error.message)))
                     }
                 }
             )
@@ -150,7 +151,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     }
 
                     override fun onError(e: Throwable) {
-                        _networkState.postValue(NetworkState.Error(e.message))
+                        _networkState.postValue(Event(NetworkState.Error(e.message)))
                     }
                 }
             )

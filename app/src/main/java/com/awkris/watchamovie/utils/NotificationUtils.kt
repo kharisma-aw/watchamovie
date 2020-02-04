@@ -13,7 +13,7 @@ import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
 import com.awkris.watchamovie.data.room.entity.Movie
 import com.awkris.watchamovie.presentation.main.MainActivity
-import com.awkris.watchamovie.presentation.moviedetail.MovieDetailActivity
+import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
 import com.awkris.watchamovie.utils.receiver.AlarmReceiver
 import java.util.*
 
@@ -125,8 +125,8 @@ object NotificationUtils {
         val intent = Intent(context.applicationContext, AlarmReceiver::class.java).apply {
             action = context.getString(R.string.action_movierelease_reminder)
             type = "$movieId"
-            putExtra(MovieDetailActivity.MOVIE_ID, movieId)
-            putExtra(MovieDetailActivity.MOVIE_TITLE, movieTitle)
+            putExtra(MovieDetailFragment.MOVIE_ID, movieId)
+            putExtra(MovieDetailFragment.MOVIE_TITLE, movieTitle)
         }
         return PendingIntent.getBroadcast(
             context,

@@ -45,8 +45,7 @@ class NowPlayingFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context)
         val adapter = MovieListAdapter()
             .apply {
-            itemMovieClickListener = object :
-                ItemMovieClickListener {
+            itemMovieClickListener = object : ItemMovieClickListener {
                 override fun onItemClicked(id: Int) {
                     fragmentListener.navigateToMovieDetail(id)
                 }
@@ -57,7 +56,9 @@ class NowPlayingFragment : Fragment() {
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
             adapter.networkState = it
             when (it) {
-                is NetworkState.Error, NetworkState.Success -> swipe_refresh.isRefreshing = false
+                is NetworkState.Error, NetworkState.Success -> {
+                    if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
+                }
             }
         })
 

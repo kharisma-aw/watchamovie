@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.presentation.common.MovieListAdapter
 import com.awkris.watchamovie.presentation.main.FragmentListener
+import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
 import com.awkris.watchamovie.utils.closeKeyboard
 import kotlinx.android.synthetic.main.fragment_search_movie.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -40,7 +42,7 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        swipe_refresh.setOnRefreshListener { viewModel.search() }
+        swipe_refresh.setOnRefreshListener { viewModel.search(srv_movie.query.toString()) }
         initRecyclerView()
 
         srv_movie.setOnQueryTextListener(
@@ -58,13 +60,21 @@ class SearchFragment : Fragment() {
         )
     }
 
+    override fun onDestroy() {
+        viewModel.invalidate()
+        super.onDestroy()
+    }
+
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(context)
         val adapter = MovieListAdapter().apply {
             itemMovieClickListener = object :
                 ItemMovieClickListener {
                 override fun onItemClicked(id: Int) {
-                    fragmentListener.navigateToMovieDetail(id)
+                    findNavController().navigate(
+                        R.id.search_to_movieDetailFragment,
+                        MovieDetailFragment.createBundle(id)
+                    )
                 }
             }
         }
@@ -73,15 +83,13 @@ class SearchFragment : Fragment() {
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
             adapter.networkState = it
             when (it) {
-                is NetworkState.Error, NetworkState.Success -> swipe_refresh.isRefreshing = false
+                is NetworkState.Error, NetworkState.Success -> {
+                    if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
+                }
             }
         })
 
         rcv_search_list.layoutManager = layoutManager
         rcv_search_list.adapter = adapter
-    }
-
-    companion object {
-        fun newInstance() = SearchFragment()
     }
 }

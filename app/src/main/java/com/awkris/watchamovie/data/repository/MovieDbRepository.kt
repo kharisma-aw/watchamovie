@@ -19,10 +19,6 @@ class MovieDbRepository(
     private val cloudMovieDataStore: CloudMovieDataStore,
     private val diskMovieDataStore: DiskMovieDataStore
 ) : KoinComponent{
-    fun getMovieDetail(movieId: Int): Single<MovieDetailResponse> {
-        return cloudMovieDataStore.getMovieDetail(movieId)
-    }
-
     fun getMovieDetailWithAdditionalInfo(movieId: Int): Single<MovieDetailWithAdditionalInfo> {
         return cloudMovieDataStore.let {
             val movieDetail = it.getMovieDetail(movieId)

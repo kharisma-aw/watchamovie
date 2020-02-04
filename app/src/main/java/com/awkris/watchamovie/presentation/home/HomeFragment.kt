@@ -48,9 +48,4 @@ class HomeFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    companion object {
-        const val TAG = "HOME_TAG"
-        fun newInstance() = HomeFragment()
-    }
 }

@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintDimensionRatio="19:9"
+                app:layout_constraintDimensionRatio="19:8"
                 app:layout_constraintTop_toTopOf="parent"
                 >
 
@@ -61,6 +61,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_normal"
+                    android:textColor="#ffffff"
                     android:textSize="@dimen/fontsize_heading3"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -73,8 +74,9 @@
                     android:id="@+id/txt_genres"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/space_large"
+                    android:layout_marginBottom="@dimen/space_xlarge"
                     android:layout_marginHorizontal="@dimen/space_normal"
+                    android:textColor="#ffffff"
                     android:textSize="@dimen/fontsize_small"
                     android:textStyle="italic"
                     app:layout_constraintBottom_toBottomOf="parent"

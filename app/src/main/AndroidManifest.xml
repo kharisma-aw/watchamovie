@@ -11,7 +11,8 @@
         android:name=".WatchAMovie"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Platform.MaterialComponents"
+        android:usesCleartextTraffic="true"
         >
         <uses-library
             android:name="android.test.runner"
@@ -34,10 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".presentation.moviedetail.MovieDetailActivity"
-            android:screenOrientation="portrait"
-            />
         <receiver android:name="com.awkris.watchamovie.utils.receiver.AlarmReceiver" />
         <receiver android:name="com.awkris.watchamovie.utils.receiver.BootReceiver">
             <intent-filter>

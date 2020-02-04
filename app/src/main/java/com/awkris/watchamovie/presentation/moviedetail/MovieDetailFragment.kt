@@ -2,61 +2,74 @@ package com.awkris.watchamovie.presentation.moviedetail
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Html
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.MovieDetailWithAdditionalInfo
 import com.awkris.watchamovie.data.model.NetworkState
+import com.awkris.watchamovie.data.model.response.Cast
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
+import com.awkris.watchamovie.data.model.response.MovieResponse
+import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.utils.Constants
 import com.awkris.watchamovie.utils.NotificationUtils
 import com.awkris.watchamovie.utils.formatReleaseYear
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import kotlinx.android.synthetic.main.error_state.*
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailFragment : Fragment() {
     private val viewModel: MovieDetailViewModel by viewModel()
     private lateinit var menu: Menu
 
     private var movieId = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_movie_detail)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_movie_detail, container, false)
+        setHasOptionsMenu(true)
+        return view
+    }
 
-        val bundle = intent.extras
-        movieId = requireNotNull(bundle).getInt(MOVIE_ID)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        movieId = requireNotNull(arguments).getInt(MOVIE_ID)
 
         setObserver()
         btn_retry.setOnClickListener { viewModel.onScreenCreated(movieId) }
         viewModel.onScreenCreated(movieId)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        this.menu = requireNotNull(menu)
-        menuInflater.inflate(R.menu.menu_detail, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        this.menu = menu
+        inflater.inflate(R.menu.menu_detail, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
         viewModel.isInWatchlist.observe(
-            this,
+            viewLifecycleOwner,
             Observer<Boolean> { inWatchlist ->
                 toggleAddWatchlistVisibility(!inWatchlist)
                 if (inWatchlist) {
                     toggleAddReminderVisibility(!(viewModel.isReminderEnabled.value ?: false))
                     viewModel.isReminderEnabled.observe(
-                        this,
+                        viewLifecycleOwner,
                         Observer<Boolean> { enabled ->
                             toggleAddReminderVisibility(if (enabled != null) !enabled else null)
                         }
@@ -64,23 +77,22 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
             }
         )
-        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_add_reminder -> {
                 NotificationUtils.scheduleAlarmsForReminder(
-                    this,
-                    requireNotNull(viewModel.movieDetail.value!!.movieDetail)
+                    requireContext(),
+                    requireNotNull(viewModel.movieDetail.value).movieDetail
                 )
                 viewModel.updateReminder(movieId, true)
                 true
             }
             R.id.menu_delete_reminder -> {
                 NotificationUtils.deleteAlarmsForReminder(
-                    this,
-                    requireNotNull(viewModel.movieDetail.value!!.movieDetail)
+                    requireContext(),
+                    requireNotNull(viewModel.movieDetail.value).movieDetail
                 )
                 viewModel.updateReminder(movieId, false)
                 true
@@ -104,17 +116,19 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun setObserver() {
         viewModel.movieDetail.observe(
-            this,
+            viewLifecycleOwner,
             Observer<MovieDetailWithAdditionalInfo> { t ->
                 showErrorState(false)
-                showMovieDetail(t!!.movieDetail)
+                showMovieDetail(t.movieDetail)
+                setRecommendations(t.recommendations)
+                setCasts(t.casts)
             }
         )
 
         viewModel.networkState.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
-                when (it) {
+                when (it.getContentIfNotHandled()) {
                     NetworkState.Loading -> showLoadingProgress(true)
                     NetworkState.Success -> {
                         showLoadingProgress(false)
@@ -129,36 +143,65 @@ class MovieDetailActivity : AppCompatActivity() {
         )
     }
 
+    private fun setCasts(list: List<Cast>) {
+        if (list.isEmpty()) {
+            txt_casts_header.visibility = View.GONE
+            rcv_casts.visibility = View.GONE
+        } else {
+            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            val adapter = CastAdapter(list)
+            rcv_casts.layoutManager = layoutManager
+            rcv_casts.adapter = adapter
+        }
+    }
+
+    private fun setRecommendations(list: List<MovieResponse>) {
+        if (list.isEmpty()) {
+            txt_recommendations_header.visibility = View.GONE
+            rcv_recommendations.visibility = View.GONE
+        } else {
+            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            val adapter = RecommendationAdapter(list).apply {
+                itemMovieClickListener = object : ItemMovieClickListener {
+                    override fun onItemClicked(id: Int) {
+                        findNavController().navigate(
+                            R.id.action_movieDetailFragment_self,
+                            createBundle(id)
+                        )
+                    }
+                }
+            }
+            rcv_recommendations.layoutManager = layoutManager
+            rcv_recommendations.adapter = adapter
+        }
+    }
+
     private fun showMovieDetail(response: MovieDetailResponse) {
         movie_detail_container.visibility = View.VISIBLE
         with(response) {
-            Glide.with(this@MovieDetailActivity)
+            Glide.with(requireContext())
                 .load(Constants.IMAGE_BASE_URL.format(backdropPath))
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
-                .centerCrop()
+                .downsample(DownsampleStrategy.AT_MOST)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(img_backdrop)
-            val title = resources.getString(
+            txt_title.text = resources.getString(
                 R.string.title_movie_format,
                 title,
                 formatReleaseYear(releaseDate)
             )
-            val whiteColor = Color.parseColor("#ffffff")
-            txt_title.apply {
-                text = title
-                setTextColor(whiteColor)
-            }
-            val genre = genres.joinToString(", ") { it.name }
-            txt_genres.apply {
-                text = genre
-                setTextColor(whiteColor)
-            }
+            txt_genres.text = genres.joinToString(", ") {it.name}
             if (tagline.isNullOrEmpty()) {
                 txt_tagline.visibility = View.GONE
             } else {
                 txt_tagline.text = String.format("\" %s \"", tagline)
             }
-            txt_overview_content.text = if (overview.isNullOrEmpty()) "No overview" else overview
+            txt_overview_content.text = if (overview.isNullOrEmpty()) {
+                "No overview provided"
+            } else {
+                overview
+            }
         }
     }
 
@@ -195,10 +238,8 @@ class MovieDetailActivity : AppCompatActivity() {
         const val MOVIE_ID = "MOVIE_ID"
         const val MOVIE_TITLE = "MOVIE_TITLE"
 
-        fun newIntent(context: Context, movieId: Int): Intent {
-            return Intent(context, MovieDetailActivity::class.java).apply {
-                putExtra(MOVIE_ID, movieId)
-            }
+        fun createBundle(movieId: Int): Bundle {
+            return bundleOf(Pair(MOVIE_ID, movieId))
         }
     }
 }
