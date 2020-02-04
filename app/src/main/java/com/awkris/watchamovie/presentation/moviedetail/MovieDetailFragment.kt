@@ -128,15 +128,17 @@ class MovieDetailFragment : Fragment() {
         viewModel.networkState.observe(
             viewLifecycleOwner,
             Observer {
-                when (it.getContentIfNotHandled()) {
-                    NetworkState.Loading -> showLoadingProgress(true)
-                    NetworkState.Success -> {
-                        showLoadingProgress(false)
-                        showErrorState(false)
-                    }
-                    is NetworkState.Error -> {
-                        showLoadingProgress(false)
-                        showErrorState(true)
+                it.getContentIfNotHandled()?.let {
+                    when (it) {
+                        NetworkState.Loading -> showLoadingProgress(true)
+                        NetworkState.Success -> {
+                            showLoadingProgress(false)
+                            showErrorState(false)
+                        }
+                        is NetworkState.Error -> {
+                            showLoadingProgress(false)
+                            showErrorState(true)
+                        }
                     }
                 }
             }
