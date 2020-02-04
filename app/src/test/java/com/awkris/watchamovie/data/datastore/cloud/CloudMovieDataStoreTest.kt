@@ -6,7 +6,6 @@ import com.awkris.watchamovie.data.datastore.CloudMovieDataStore
 import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.CreditsResponse
 import com.awkris.watchamovie.data.model.response.MovieDetailResponse
-import com.awkris.watchamovie.data.model.response.MovieListGeneralResponse
 import com.awkris.watchamovie.data.model.response.MovieResponse
 import com.awkris.watchamovie.data.utils.MockApiGenerator
 import com.awkris.watchamovie.mockdata.MOVIE_CREDITS
