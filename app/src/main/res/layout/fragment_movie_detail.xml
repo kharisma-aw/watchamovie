@@ -61,7 +61,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_normal"
-                    android:textColor=""
                     android:textSize="@dimen/fontsize_heading3"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"

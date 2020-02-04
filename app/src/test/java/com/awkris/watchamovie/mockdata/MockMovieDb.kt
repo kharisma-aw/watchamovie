@@ -73,3 +73,51 @@ val MOVIE_DETAIL = MovieDetailResponse(
     voteAverage = 7.8,
     voteCount = 3439
 )
+
+private val CAST_1 = Cast(
+    castId = 4,
+    character = "The Narrator",
+    creditId = "52fe4250c3a36847f80149f3",
+    gender = 2,
+    id = 819,
+    name = "Edward Norton",
+    order = 0,
+    profilePath = "/eIkFHNlfretLS1spAcIoihKUS62.jpg"
+)
+
+private val CAST_2 = Cast(
+    castId = 5,
+    character = "Tyler Durden",
+    creditId = "52fe4250c3a36847f80149f7",
+    gender = 2,
+    id = 287,
+    name = "Brad Pitt",
+    order = 1,
+    profilePath = "/kc3M04QQAuZ9woUvH3Ju5T7ZqG5.jpg"
+)
+
+private val CREW_1 = Crew(
+    creditId = "56380f0cc3a3681b5c0200be",
+    department = "Writing",
+    gender = 0,
+    id = 7469,
+    job = "Screenplay",
+    name = "Jim Uhls",
+    profilePath = null
+)
+
+private val CREW_2 = Crew(
+    creditId = "52fe4250c3a36847f8014a05",
+    department = "Production",
+    gender = 0,
+    id = 7474,
+    job = "Producer",
+    name = "Ross Grayson Bell",
+    profilePath = null
+)
+
+val MOVIE_CREDITS = CreditsResponse(
+    movieId = 550,
+    casts = listOf(CAST_1, CAST_2),
+    crews = listOf(CREW_1, CREW_2)
+)

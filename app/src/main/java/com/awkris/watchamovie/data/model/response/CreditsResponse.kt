@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CreditsResponse(
     @SerializedName("id")
-    val movieId: String,
+    val movieId: Int,
     @SerializedName("cast")
     val casts: List<Cast>,
     @SerializedName("crew")
@@ -13,11 +13,11 @@ data class CreditsResponse(
 
 data class Cast(
     @SerializedName("cast_id")
-    val cast_id: Int,
+    val castId: Int,
     @SerializedName("character")
     val character: String,
     @SerializedName("credit_id")
-    val credit_id: String,
+    val creditId: String,
     @SerializedName("gender")
     val gender: Int?,
     @SerializedName("id")
@@ -27,13 +27,13 @@ data class Cast(
     @SerializedName("order")
     val order: Int,
     @SerializedName("profile_path")
-    val profile_path: String?
+    val profilePath: String?
 )
 
 data class Crew(
-    @SerializedName("cast_id")
-    val credit_id: Int,
-    @SerializedName("character")
+    @SerializedName("credit_id")
+    val creditId: String,
+    @SerializedName("department")
     val department: String,
     @SerializedName("gender")
     val gender: Int?,
@@ -44,5 +44,5 @@ data class Crew(
     @SerializedName("name")
     val name: String,
     @SerializedName("profile_path")
-    val profile_path: String?
+    val profilePath: String?
 )
