@@ -1,11 +1,7 @@
 package com.awkris.watchamovie.presentation.moviedetail
 
-import android.content.Context
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,6 +17,7 @@ import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.utils.Constants
 import com.awkris.watchamovie.utils.NotificationUtils
 import com.awkris.watchamovie.utils.formatReleaseYear
+import com.awkris.watchamovie.utils.isUpcoming
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
@@ -122,6 +119,7 @@ class MovieDetailFragment : Fragment() {
         viewModel.movieDetail.observe(
             viewLifecycleOwner,
             Observer<MovieDetailWithAdditionalInfo> { t ->
+                if (!isUpcoming(t.movieDetail.releaseDate)) toggleAddReminderVisibility()
                 showErrorState(false)
                 showMovieDetail(t.movieDetail)
                 setRecommendations(t.recommendations)
