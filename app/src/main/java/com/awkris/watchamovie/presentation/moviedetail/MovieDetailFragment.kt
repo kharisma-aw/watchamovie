@@ -128,8 +128,8 @@ class MovieDetailFragment : Fragment() {
         viewModel.networkState.observe(
             viewLifecycleOwner,
             Observer {
-                it.getContentIfNotHandled()?.let {
-                    when (it) {
+                it.getContentIfNotHandled()?.let { networkState ->
+                    when (networkState) {
                         NetworkState.Loading -> showLoadingProgress(true)
                         NetworkState.Success -> {
                             showLoadingProgress(false)
