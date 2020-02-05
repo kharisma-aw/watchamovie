@@ -47,7 +47,11 @@ class MovieDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        movieId = requireNotNull(arguments).getInt(MOVIE_ID)
+        val bundle = requireNotNull(arguments)
+        movieId = bundle.getInt(MOVIE_ID)
+        if (bundle.getBoolean(DISABLE_REMINDER)) {
+            viewModel.updateReminder(movieId, false)
+        }
 
         setObserver()
         btn_retry.setOnClickListener { viewModel.onScreenCreated(movieId) }
@@ -239,9 +243,14 @@ class MovieDetailFragment : Fragment() {
     companion object {
         const val MOVIE_ID = "MOVIE_ID"
         const val MOVIE_TITLE = "MOVIE_TITLE"
+        const val DISABLE_REMINDER = "DISABLE_REMINDER"
 
         fun createBundle(movieId: Int): Bundle {
             return bundleOf(Pair(MOVIE_ID, movieId))
+        }
+
+        fun createBundle(movieId: Int, disableReminder: Boolean): Bundle {
+            return bundleOf(Pair(MOVIE_ID, movieId), Pair(DISABLE_REMINDER, disableReminder))
         }
     }
 }

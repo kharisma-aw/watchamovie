@@ -18,15 +18,15 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         if (bundle != null) {
             val movieId = bundle.getInt(MovieDetailFragment.MOVIE_ID)
             if (movieId != 0) {
-                navigateToMovieDetail(movieId)
+                navigateToMovieDetail(movieId, true)
             }
         }
     }
 
-    override fun navigateToMovieDetail(movieId: Int) {
+    override fun navigateToMovieDetail(movieId: Int, disableReminder: Boolean) {
         findNavController(R.id.nav_host_fragment).navigate(
             R.id.goto_movieDetailFragment,
-            MovieDetailFragment.createBundle(movieId)
+            MovieDetailFragment.createBundle(movieId, disableReminder)
         )
     }
 
