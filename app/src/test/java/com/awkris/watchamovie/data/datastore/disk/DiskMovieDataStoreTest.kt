@@ -19,8 +19,8 @@ class DiskMovieDataStoreTest : DiskDataStoreTest() {
     @Test
     fun `save movie to database successfully`() {
         val movie = transform(MOVIE_DETAIL)
-        val observer = TestObserver.create<Completable>()
-        whenever(movieDao.insert(movie)).thenReturn(Completable.complete())
+        val observer = TestObserver.create<Long>()
+        whenever(movieDao.insert(movie)).thenReturn(Maybe.just(movie.id.toLong()))
 
         diskDataStore.saveToWatchlist(MOVIE_DETAIL).subscribe(observer)
 

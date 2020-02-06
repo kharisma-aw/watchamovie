@@ -9,20 +9,17 @@ import org.koin.core.get
 
 class NowPlayingDataSourceFactory : DataSource.Factory<Int, MovieResponse>(), KoinComponent {
     private lateinit var nowPlayingDataSource: NowPlayingDataSource
-    private val dataSource = MutableLiveData<NowPlayingDataSource>()
+    private val _dataSource = MutableLiveData<NowPlayingDataSource>()
+    val dataSource: LiveData<NowPlayingDataSource> = _dataSource
 
     override fun create(): DataSource<Int, MovieResponse> {
         nowPlayingDataSource = get()
-        dataSource.postValue(nowPlayingDataSource)
+        _dataSource.postValue(nowPlayingDataSource)
         return nowPlayingDataSource
     }
 
     fun recreate() {
         if (this::nowPlayingDataSource.isInitialized) nowPlayingDataSource.invalidate()
         create()
-    }
-
-    fun getDataSource(): LiveData<NowPlayingDataSource> {
-        return dataSource
     }
 }

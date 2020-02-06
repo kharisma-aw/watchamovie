@@ -37,4 +37,10 @@ interface MovieDbApi {
                     @Query("query") query: String,
                     @Query("page") page: Int?
     ): Single<MovieListGeneralResponse>
+
+    @GET(UrlConstants.UPCOMING)
+    fun getUpcomingList(@Query("api_key") apiKey: String,
+                        @Query("region") region: String,
+                        @Query("page") page: Int?
+    ): Single<NowPlayingResponse>
 }

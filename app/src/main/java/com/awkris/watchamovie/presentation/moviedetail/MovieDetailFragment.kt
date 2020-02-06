@@ -67,15 +67,24 @@ class MovieDetailFragment : Fragment() {
             viewLifecycleOwner,
             Observer<Boolean> { inWatchlist ->
                 toggleAddWatchlistVisibility(!inWatchlist)
-                if (inWatchlist) {
-                    toggleAddReminderVisibility(!(viewModel.isReminderEnabled.value ?: false))
-                    viewModel.isReminderEnabled.observe(
-                        viewLifecycleOwner,
-                        Observer<Boolean> { enabled ->
-                            toggleAddReminderVisibility(if (enabled != null) !enabled else null)
+                viewModel.isUpcoming.observe(
+                    viewLifecycleOwner,
+                    Observer { isUpcoming ->
+                        if (inWatchlist && isUpcoming) {
+                            toggleAddReminderVisibility(
+                                !(viewModel.isReminderEnabled.value ?: false)
+                            )
+                            viewModel.isReminderEnabled.observe(
+                                viewLifecycleOwner,
+                                Observer<Boolean> { enabled ->
+                                    toggleAddReminderVisibility(
+                                        if (enabled != null) !enabled else null
+                                    )
+                                }
+                            )
                         }
-                    )
-                }
+                    }
+                )
             }
         )
     }
@@ -119,7 +128,6 @@ class MovieDetailFragment : Fragment() {
         viewModel.movieDetail.observe(
             viewLifecycleOwner,
             Observer<MovieDetailWithAdditionalInfo> { t ->
-                if (!isUpcoming(t.movieDetail.releaseDate)) toggleAddReminderVisibility()
                 showErrorState(false)
                 showMovieDetail(t.movieDetail)
                 setRecommendations(t.recommendations)

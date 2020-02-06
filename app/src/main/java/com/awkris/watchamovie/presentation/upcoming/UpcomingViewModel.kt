@@ -1,4 +1,4 @@
-package com.awkris.watchamovie.presentation.nowplaying
+package com.awkris.watchamovie.presentation.upcoming
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -8,9 +8,8 @@ import androidx.paging.PagedList
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieResponse
 
-
-class NowPlayingViewModel(
-    private val dataSourceFactory: NowPlayingDataSourceFactory
+class UpcomingViewModel(
+    private val dataSourceFactory: UpcomingDataSourceFactory
 ) : ViewModel() {
     val networkState: LiveData<NetworkState>
     val nowPlayingList: LiveData<PagedList<MovieResponse>>
@@ -31,5 +30,4 @@ class NowPlayingViewModel(
 
     fun refresh() {
         dataSourceFactory.recreate()
-    }
-}
+    }}

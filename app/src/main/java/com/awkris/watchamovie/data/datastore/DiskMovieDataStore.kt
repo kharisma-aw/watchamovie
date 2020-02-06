@@ -12,7 +12,7 @@ import io.reactivex.Single
 import org.koin.core.KoinComponent
 
 class DiskMovieDataStore(private val db: MovieDatabase) : KoinComponent {
-    fun saveToWatchlist(movie: MovieDetailResponse): Completable {
+    fun saveToWatchlist(movie: MovieDetailResponse): Maybe<Long> {
         return db.movieDao().insert(transform(movie))
             .doOnError(::log)
     }

@@ -44,6 +44,14 @@ class CloudMovieDataStore(private val movieDbApi: MovieDbApi) : KoinComponent {
             .doOnError(::log)
     }
 
+    fun getUpcomingList(region: String, page: Int?): Single<PaginatedList<MovieResponse>> {
+        return movieDbApi.getUpcomingList(KEY, region, page)
+            .map {
+                PaginatedList(it.movieList.filterNotNull(), it.page, it.totalPages, it.totalResults)
+            }
+            .doOnError(::log)
+    }
+
     companion object {
         const val KEY = BuildConfig.moviedbkey
     }

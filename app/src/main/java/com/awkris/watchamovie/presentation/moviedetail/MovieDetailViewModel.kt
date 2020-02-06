@@ -8,6 +8,7 @@ import com.awkris.watchamovie.data.model.MovieDetailWithAdditionalInfo
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.repository.MovieDbRepository
 import com.awkris.watchamovie.data.room.entity.Movie
+import com.awkris.watchamovie.utils.isUpcoming
 import io.reactivex.CompletableObserver
 import io.reactivex.MaybeObserver
 import io.reactivex.SingleObserver
@@ -22,6 +23,9 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
 
     private val _isReminderEnabled: MutableLiveData<Boolean> = MutableLiveData()
     val isReminderEnabled: LiveData<Boolean> = _isReminderEnabled
+
+    private val _isUpcoming: MutableLiveData<Boolean> = MutableLiveData()
+    val isUpcoming: LiveData<Boolean> = _isUpcoming
 
     private val _movieDetail: MutableLiveData<MovieDetailWithAdditionalInfo> = MutableLiveData()
     val movieDetail: LiveData<MovieDetailWithAdditionalInfo> = _movieDetail
@@ -68,10 +72,12 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                object : CompletableObserver {
+                object : MaybeObserver<Long> {
+                    override fun onSuccess(t: Long) {
+                        findMovie(t.toInt())
+                    }
+
                     override fun onComplete() {
-                        _isInWatchlist.postValue(true)
-                        _isReminderEnabled.postValue(false)
                     }
 
                     override fun onSubscribe(d: Disposable) {
@@ -140,6 +146,7 @@ class MovieDetailViewModel(private val repository: MovieDbRepository) : ViewMode
                     override fun onSuccess(t: Movie) {
                         _isInWatchlist.postValue(true)
                         _isReminderEnabled.postValue(t.reminderState)
+                        _isUpcoming.postValue(isUpcoming(t.releaseDate))
                     }
 
                     override fun onComplete() {

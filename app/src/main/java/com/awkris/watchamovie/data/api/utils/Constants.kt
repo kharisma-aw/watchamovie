@@ -7,4 +7,5 @@ object UrlConstants {
     const val NOW_PLAYING = "movie/now_playing"
     const val RECOMMENDATIONS = "movie/{movie_id}/recommendations"
     const val SEARCH_MOVIE = "search/movie"
+    const val UPCOMING = "movie/upcoming"
 }

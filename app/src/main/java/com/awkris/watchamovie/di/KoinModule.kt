@@ -14,6 +14,9 @@ import com.awkris.watchamovie.presentation.nowplaying.NowPlayingDataSourceFactor
 import com.awkris.watchamovie.presentation.nowplaying.NowPlayingViewModel
 import com.awkris.watchamovie.presentation.search.SearchDataSourceFactory
 import com.awkris.watchamovie.presentation.search.SearchViewModel
+import com.awkris.watchamovie.presentation.upcoming.UpcomingDataSource
+import com.awkris.watchamovie.presentation.upcoming.UpcomingDataSourceFactory
+import com.awkris.watchamovie.presentation.upcoming.UpcomingViewModel
 import com.awkris.watchamovie.presentation.watchlist.WatchlistViewModel
 import com.google.gson.Gson
 import org.koin.android.viewmodel.dsl.viewModel
@@ -23,10 +26,13 @@ val viewmodelModule = module {
     factory { SearchDataSourceFactory() }
     single { NowPlayingDataSourceFactory() }
     factory { NowPlayingDataSource(get()) }
+    single { UpcomingDataSourceFactory() }
+    factory { UpcomingDataSource(get()) }
 
     viewModel { MovieDetailViewModel(get()) }
     viewModel { NowPlayingViewModel(get()) }
     viewModel { SearchViewModel(get()) }
+    viewModel { UpcomingViewModel(get()) }
     viewModel { WatchlistViewModel(get()) }
 }
 

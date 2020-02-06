@@ -10,7 +10,7 @@ import io.reactivex.Single
 @Dao
 interface MovieDao {
     @Insert
-    fun insert(movie: Movie): Completable
+    fun insert(movie: Movie): Maybe<Long>
 
     @Query("UPDATE movie SET reminderState = :setReminder WHERE id = :id")
     fun updateReminder(id: Int, setReminder: Boolean): Completable

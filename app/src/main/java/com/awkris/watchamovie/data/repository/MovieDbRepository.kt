@@ -43,7 +43,11 @@ class MovieDbRepository(
         return cloudMovieDataStore.searchMovie(query, page)
     }
 
-    fun saveToWatchlist(movie: MovieDetailResponse): Completable {
+    fun getUpcomingList(region: String, page: Int? = null): Single<PaginatedList<MovieResponse>> {
+        return cloudMovieDataStore.getUpcomingList(region, page)
+    }
+
+    fun saveToWatchlist(movie: MovieDetailResponse): Maybe<Long> {
         return diskMovieDataStore.saveToWatchlist(movie)
     }
 

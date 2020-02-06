@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.awkris.watchamovie.presentation.nowplaying.NowPlayingFragment
+import com.awkris.watchamovie.presentation.upcoming.UpcomingFragment
 import com.awkris.watchamovie.presentation.watchlist.WatchlistFragment
 import java.lang.IllegalStateException
 
@@ -11,6 +12,7 @@ class HomeViewPagerAdapter(fm: FragmentManager)
     : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val fragmentList = listOf(
         NowPlayingFragment.newInstance(),
+        UpcomingFragment.newInstance(),
         WatchlistFragment.newInstance()
     )
 
@@ -19,6 +21,7 @@ class HomeViewPagerAdapter(fm: FragmentManager)
     override fun getPageTitle(position: Int): CharSequence {
         return when (getItem(position)) {
             is NowPlayingFragment -> "Now Playing"
+            is UpcomingFragment -> "Upcoming"
             is WatchlistFragment -> "Watchlist"
             else -> throw IllegalStateException("Doesn't exist")
         }
