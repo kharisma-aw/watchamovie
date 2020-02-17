@@ -92,9 +92,10 @@ object NotificationUtils {
     ) {
         val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = createPendingIntent(context, movie.id, movie.title)
-        scheduleAlarm(movie.releaseDate, alarmIntent, alarmMgr)
+        scheduleAlarm(movie.releaseDate!!, alarmIntent, alarmMgr)
     }
 
+    @Suppress("DEPRECATION")
     private fun scheduleAlarm(
         date: String,
         alarmIntent: PendingIntent,

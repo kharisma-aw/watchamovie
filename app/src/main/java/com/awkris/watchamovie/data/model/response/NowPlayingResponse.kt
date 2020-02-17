@@ -1,23 +1,26 @@
 package com.awkris.watchamovie.data.model.response
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class NowPlayingResponse(
-    @SerializedName("page")
+    @Json(name = "page")
     val page: Int,
-    @SerializedName("total_pages")
+    @Json(name = "total_pages")
     val totalPages: Int,
-    @SerializedName("total_results")
+    @Json(name = "total_results")
     val totalResults: Int,
-    @SerializedName("dates")
+    @Json(name = "dates")
     val dates: DateResponse,
-    @SerializedName("results")
+    @Json(name = "results")
     val movieList: List<MovieResponse>
 )
 
+@JsonClass(generateAdapter = true)
 data class DateResponse(
-    @SerializedName("maximum")
+    @Json(name = "maximum")
     val maximum: String,
-    @SerializedName("minimum")
+    @Json(name = "minimum")
     val minimum: String
 )

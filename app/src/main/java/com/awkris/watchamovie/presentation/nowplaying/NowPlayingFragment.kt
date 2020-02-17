@@ -15,6 +15,7 @@ import com.awkris.watchamovie.presentation.common.MovieListAdapter
 import com.awkris.watchamovie.presentation.main.FragmentListener
 import kotlinx.android.synthetic.main.fragment_refreshable_list.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class NowPlayingFragment : Fragment() {
     private val viewModel: NowPlayingViewModel by viewModel()
@@ -54,7 +55,8 @@ class NowPlayingFragment : Fragment() {
 
         viewModel.nowPlayingList.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
-            adapter.networkState = it
+            Timber.d("Current state: %s", it.toString())
+            adapter.setNetworkState(it)
             when (it) {
                 is NetworkState.Error, NetworkState.Success -> {
                     if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false

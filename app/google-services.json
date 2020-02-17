@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "451335502440",
+    "firebase_url": "https://watchamovie-3e7da.firebaseio.com",
+    "project_id": "watchamovie-3e7da",
+    "storage_bucket": "watchamovie-3e7da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451335502440:android:2d68346e75eaff334e59dd",
+        "android_client_info": {
+          "package_name": "com.awkris.watchamovie.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451335502440-e9g71m1nuj12rv0m648j0t7a698btv8g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.awkris.watchamovie.debug",
+            "certificate_hash": "f5236481a88b4d95109ad21d46b654aa59dfc711"
+          }
+        },
+        {
+          "client_id": "451335502440-cgc2pqj684kfnc302gc1fvk8i5ma56lu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcjuSIc3VKOCwbDMvn5CE6SCzDztNjBDU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451335502440-cgc2pqj684kfnc302gc1fvk8i5ma56lu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

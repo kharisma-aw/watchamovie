@@ -1,6 +1,5 @@
 package com.awkris.watchamovie.di
 
-import android.content.Context
 import androidx.room.Room
 import com.awkris.watchamovie.data.api.MovieDbApi
 import com.awkris.watchamovie.data.api.utils.ApiFactory
@@ -18,7 +17,10 @@ import com.awkris.watchamovie.presentation.upcoming.UpcomingDataSource
 import com.awkris.watchamovie.presentation.upcoming.UpcomingDataSourceFactory
 import com.awkris.watchamovie.presentation.upcoming.UpcomingViewModel
 import com.awkris.watchamovie.presentation.watchlist.WatchlistViewModel
-import com.google.gson.Gson
+import com.awkris.watchamovie.utils.storage.SessionSharedPreferences
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -29,15 +31,15 @@ val viewmodelModule = module {
     single { UpcomingDataSourceFactory() }
     factory { UpcomingDataSource(get()) }
 
-    viewModel { MovieDetailViewModel(get()) }
+    viewModel { MovieDetailViewModel() }
     viewModel { NowPlayingViewModel(get()) }
-    viewModel { SearchViewModel(get()) }
+    viewModel { SearchViewModel(get(), get()) }
     viewModel { UpcomingViewModel(get()) }
     viewModel { WatchlistViewModel(get()) }
 }
 
 val apiModule = module {
-    fun provideApiFactory() = ApiFactory(Gson())
+    fun provideApiFactory() = ApiFactory(provideMoshi())
 
     single { provideApiFactory().createApi(MovieDbApi::class.java) }
 }
@@ -57,3 +59,9 @@ val dataStoreModule = module {
 val repositoryModule = module {
     single { MovieDbRepository(get(), get()) }
 }
+
+val storageModule = module {
+    single { SessionSharedPreferences(androidApplication(), provideMoshi()) }
+}
+
+private fun provideMoshi() = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()

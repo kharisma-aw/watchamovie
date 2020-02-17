@@ -22,7 +22,8 @@ fun formatDate(s: String): Date {
     return responsePattern.parse(s)!!
 }
 
-fun isUpcoming(s: String): Boolean {
+fun isUpcoming(s: String?): Boolean {
+    if (s.isNullOrEmpty()) return false
     val date = formatDate(s).time
     val timeDiff = date - System.currentTimeMillis()
     return timeDiff > 0 && TimeUnit.MILLISECONDS.toHours(timeDiff) > HOURS_IN_A_DAY

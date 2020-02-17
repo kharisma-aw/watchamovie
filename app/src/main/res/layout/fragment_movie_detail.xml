@@ -90,9 +90,10 @@
 
             <TextView
                 android:id="@+id/txt_tagline"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_normal"
+                android:textAlignment="center"
                 android:textSize="@dimen/fontsize_normal"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +103,7 @@
 
             <TextView
                 android:id="@+id/txt_overview_header"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_normal"
                 android:text="@string/title.section.overview"
@@ -131,7 +132,7 @@
 
             <TextView
                 android:id="@+id/txt_casts_header"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_normal"
                 android:text="@string/title.section.casts"
@@ -155,7 +156,7 @@
 
             <TextView
                 android:id="@+id/txt_recommendations_header"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_normal"
                 android:text="@string/title.section.recommendations"

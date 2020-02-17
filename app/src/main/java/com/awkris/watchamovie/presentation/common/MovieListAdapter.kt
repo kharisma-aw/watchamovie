@@ -12,10 +12,14 @@ import com.awkris.watchamovie.data.model.response.MovieResponse
 class MovieListAdapter :
     PagedListAdapter<MovieResponse, RecyclerView.ViewHolder>(MovieResponse.DIFF_CALLBACK) {
     lateinit var itemMovieClickListener: ItemMovieClickListener
-    lateinit var networkState: NetworkState
+    private lateinit var networkState: NetworkState
+
+    override fun getItemCount(): Int {
+        return super.getItemCount() + if (hasExtraRow()) 1 else 0
+    }
 
     override fun getItemViewType(position: Int): Int {
-        return if (networkState == NetworkState.Loading && position == itemCount - 1) {
+        return if (hasExtraRow() && position == itemCount - 1) {
             ItemType.LoadingProgress.ordinal
         } else {
             ItemType.ItemMovie.ordinal
@@ -31,7 +35,7 @@ class MovieListAdapter :
             ItemType.ItemMovie.ordinal -> ItemMovieViewHolder(
                 inflater.inflate(R.layout.item_movie, parent, false)
             ).also { it.itemMovieClickListener = itemMovieClickListener }
-            else -> throw UnsupportedOperationException("There's no such item type!!")
+            else -> throw UnsupportedOperationException("Unknown viewtype!")
         }
     }
 
@@ -40,6 +44,26 @@ class MovieListAdapter :
             is ItemMovieViewHolder -> holder.bind(requireNotNull(getItem(position)))
             is LoadingItemViewHolder -> {}
         }
+    }
+
+    fun setNetworkState(state: NetworkState) {
+        val previousState = if (this::networkState.isInitialized) networkState else null
+        val hadExtraRow = hasExtraRow()
+        networkState = state
+        val hasExtraRow = hasExtraRow()
+        if (hasExtraRow != hadExtraRow) {
+            if (hadExtraRow) {
+                notifyItemRemoved(super.getItemCount())
+            } else {
+                notifyItemInserted(super.getItemCount())
+            }
+        } else if (hasExtraRow && previousState != state) {
+            notifyItemChanged(itemCount - 1)
+        }
+    }
+
+    private fun hasExtraRow(): Boolean {
+        return this::networkState.isInitialized && networkState == NetworkState.Loading
     }
 
     inner class LoadingItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

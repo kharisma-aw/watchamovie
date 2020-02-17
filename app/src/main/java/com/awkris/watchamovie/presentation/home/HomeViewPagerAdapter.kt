@@ -27,5 +27,5 @@ class HomeViewPagerAdapter(fm: FragmentManager)
         }
     }
 
-    override fun getItem(position: Int) = fragmentList[position] as Fragment
+    override fun getItem(position: Int) = fragmentList[position]
 }

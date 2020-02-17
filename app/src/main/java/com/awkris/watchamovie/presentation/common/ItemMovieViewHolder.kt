@@ -15,25 +15,29 @@ class ItemMovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     lateinit var itemMovieClickListener: ItemMovieClickListener
 
     fun bind(data: MovieResponse) {
-        Glide.with(itemView.context)
-            .load(Constants.IMAGE_BASE_URL_500.format(data.backdropPath))
-            .placeholder(R.drawable.placeholder)
-            .error(R.drawable.placeholder)
-            .downsample(DownsampleStrategy.AT_MOST)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-            .into(itemView.img_movie_thumbnail)
+        data.backdropPath?.let {
+            Glide.with(itemView.context)
+                .load(Constants.IMAGE_BASE_URL_500.format(it))
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .downsample(DownsampleStrategy.AT_MOST)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .into(itemView.img_movie_thumbnail)
+        }
         itemView.txt_movie_title.text = data.title
         itemView.setOnClickListener { itemMovieClickListener.onItemClicked(data.id) }
     }
 
     fun bind(data: Movie) {
-        Glide.with(itemView.context)
-            .load(Constants.IMAGE_BASE_URL_500.format(data.backdropPath))
-            .placeholder(R.drawable.placeholder)
-            .error(R.drawable.placeholder)
-            .downsample(DownsampleStrategy.AT_MOST)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-            .into(itemView.img_movie_thumbnail)
+        data.backdropPath?.let {
+            Glide.with(itemView.context)
+                .load(Constants.IMAGE_BASE_URL_500.format(it))
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .downsample(DownsampleStrategy.AT_MOST)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .into(itemView.img_movie_thumbnail)
+        }
         itemView.txt_movie_title.text = data.title
         itemView.setOnClickListener { itemMovieClickListener.onItemClicked(data.id) }
     }

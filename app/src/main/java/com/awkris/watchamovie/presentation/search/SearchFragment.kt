@@ -1,6 +1,5 @@
 package com.awkris.watchamovie.presentation.search
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,22 +13,34 @@ import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.presentation.common.MovieListAdapter
-import com.awkris.watchamovie.presentation.main.FragmentListener
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
+import com.awkris.watchamovie.presentation.search.lastkeyword.KeywordClickListener
+import com.awkris.watchamovie.presentation.search.lastkeyword.LastKeywordsAdapter
 import com.awkris.watchamovie.utils.closeKeyboard
+import kotlinx.android.synthetic.main.fragment_refreshable_list.*
 import kotlinx.android.synthetic.main.fragment_search_movie.*
-import org.koin.android.viewmodel.ext.android.viewModel
-
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : Fragment() {
-    private val viewModel: SearchViewModel by viewModel()
-    private lateinit var fragmentListener: FragmentListener
+    private val viewModel: SearchViewModel by sharedViewModel()
+    private val lastKeywordsAdapter = LastKeywordsAdapter().also {
+        it.itemClickListener = object : KeywordClickListener {
+            override fun onKeywordClicked(s: String) {
+                srv_movie.setQuery(s, true)
+                srv_movie.clearFocus()
+            }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        assert(context is FragmentListener)
-        fragmentListener = context as FragmentListener
+        }
+    }
+    private val searchListAdapter = MovieListAdapter().also {
+        it.itemMovieClickListener = object : ItemMovieClickListener {
+            override fun onItemClicked(id: Int) {
+                findNavController().navigate(
+                    R.id.search_to_movieDetailFragment,
+                    MovieDetailFragment.createBundle(id)
+                )
+            }
+        }
     }
 
     override fun onCreateView(
@@ -42,14 +53,27 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        swipe_refresh.setOnRefreshListener { viewModel.search(srv_movie.query.toString()) }
+        swipe_refresh.isEnabled = false
+        initObserver()
         initRecyclerView()
+
+        srv_movie.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                rcv_list.adapter = lastKeywordsAdapter
+            } else {
+                rcv_list.adapter = searchListAdapter
+            }
+        }
 
         srv_movie.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     closeKeyboard(requireContext(), srv_movie.windowToken)
-                    if (!query.isNullOrEmpty()) viewModel.search(query)
+                    srv_movie.clearFocus()
+                    if (!query.isNullOrEmpty()) {
+                        viewModel.search(query)
+                        viewModel.saveKeyword(query)
+                    }
                     return true
                 }
 
@@ -60,6 +84,16 @@ class SearchFragment : Fragment() {
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+        rcv_list.adapter = searchListAdapter
+    }
+
+    override fun onPause() {
+        srv_movie.clearFocus()
+        super.onPause()
+    }
+
     override fun onDestroy() {
         viewModel.invalidate()
         super.onDestroy()
@@ -67,29 +101,23 @@ class SearchFragment : Fragment() {
 
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(context)
-        val adapter = MovieListAdapter().apply {
-            itemMovieClickListener = object :
-                ItemMovieClickListener {
-                override fun onItemClicked(id: Int) {
-                    findNavController().navigate(
-                        R.id.search_to_movieDetailFragment,
-                        MovieDetailFragment.createBundle(id)
-                    )
-                }
-            }
-        }
+        rcv_list.layoutManager = layoutManager
+    }
 
-        viewModel.searchList.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+    private fun initObserver() {
+        viewModel.searchList.observe(viewLifecycleOwner, Observer {
+            searchListAdapter.submitList(it)
+        })
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
-            adapter.networkState = it
+            searchListAdapter.setNetworkState(it)
             when (it) {
                 is NetworkState.Error, NetworkState.Success -> {
                     if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
                 }
             }
         })
-
-        rcv_search_list.layoutManager = layoutManager
-        rcv_search_list.adapter = adapter
+        viewModel.lastKeywords.observe(viewLifecycleOwner, Observer {
+            lastKeywordsAdapter.submitList(it)
+        })
     }
 }

@@ -4,10 +4,7 @@ import com.awkris.watchamovie.BuildConfig
 import com.awkris.watchamovie.data.api.MovieDbApi
 import com.awkris.watchamovie.data.api.utils.log
 import com.awkris.watchamovie.data.model.PaginatedList
-import com.awkris.watchamovie.data.model.response.Cast
-import com.awkris.watchamovie.data.model.response.CreditsResponse
-import com.awkris.watchamovie.data.model.response.MovieDetailResponse
-import com.awkris.watchamovie.data.model.response.MovieResponse
+import com.awkris.watchamovie.data.model.response.*
 import io.reactivex.Single
 import org.koin.core.KoinComponent
 
@@ -17,8 +14,18 @@ class CloudMovieDataStore(private val movieDbApi: MovieDbApi) : KoinComponent {
             .doOnError(::log)
     }
 
+    fun getCrewCredits(personId: Int): Single<CrewCreditsResponse> {
+        return movieDbApi.getCrewCedits(personId, KEY)
+            .doOnError(::log)
+    }
+
     fun getMovieDetail(movieId: Int): Single<MovieDetailResponse> {
         return movieDbApi.getMovieDetail(movieId, KEY)
+            .doOnError(::log)
+    }
+
+    fun getPersonDetail(personId: Int): Single<PersonDetailResponse> {
+        return movieDbApi.getPersonDetail(personId, KEY)
             .doOnError(::log)
     }
 

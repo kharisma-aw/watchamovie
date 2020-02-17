@@ -24,6 +24,7 @@ import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import kotlinx.android.synthetic.main.error_state.*
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class MovieDetailFragment : Fragment() {
     private val viewModel: MovieDetailViewModel by viewModel()
@@ -46,9 +47,12 @@ class MovieDetailFragment : Fragment() {
 
         val bundle = requireNotNull(arguments)
         movieId = bundle.getInt(MOVIE_ID)
+        Timber.d("MovieId: %d", movieId)
         if (bundle.getBoolean(DISABLE_REMINDER)) {
             viewModel.updateReminder(movieId, false)
         }
+
+        viewModel.lifecycle = viewLifecycleOwner.lifecycle
 
         setObserver()
         btn_retry.setOnClickListener { viewModel.onScreenCreated(movieId) }
@@ -119,11 +123,6 @@ class MovieDetailFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        viewModel.clear()
-        super.onDestroy()
-    }
-
     private fun setObserver() {
         viewModel.movieDetail.observe(
             viewLifecycleOwner,
@@ -191,13 +190,15 @@ class MovieDetailFragment : Fragment() {
     private fun showMovieDetail(response: MovieDetailResponse) {
         movie_detail_container.visibility = View.VISIBLE
         with(response) {
-            Glide.with(requireContext())
-                .load(Constants.IMAGE_BASE_URL.format(backdropPath))
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .downsample(DownsampleStrategy.AT_MOST)
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .into(img_backdrop)
+            backdropPath?.let {
+                Glide.with(requireContext())
+                    .load(Constants.IMAGE_BASE_URL.format(it))
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .downsample(DownsampleStrategy.AT_MOST)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .into(img_backdrop)
+            }
             txt_title.text = resources.getString(
                 R.string.title_movie_format,
                 title,

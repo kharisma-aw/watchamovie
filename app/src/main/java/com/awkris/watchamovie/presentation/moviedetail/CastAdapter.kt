@@ -30,14 +30,16 @@ class CastAdapter(
 
     inner class CastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: Cast) {
-            Glide.with(itemView.context)
-                .load(Constants.IMAGE_BASE_URL_500.format(data.profilePath))
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .circleCrop()
-                .downsample(DownsampleStrategy.AT_MOST)
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .into(itemView.img_cast)
+            data.profilePath?.let {
+                Glide.with(itemView.context)
+                    .load(Constants.IMAGE_BASE_URL_500.format(it))
+                    .placeholder(R.drawable.circle_placeholder)
+                    .error(R.drawable.circle_placeholder)
+                    .circleCrop()
+                    .downsample(DownsampleStrategy.AT_MOST)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .into(itemView.img_cast)
+            }
             itemView.txt_cast.text = data.name
         }
     }

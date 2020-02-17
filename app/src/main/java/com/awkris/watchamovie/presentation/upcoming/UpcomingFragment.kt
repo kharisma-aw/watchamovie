@@ -54,7 +54,7 @@ class UpcomingFragment : Fragment() {
 
         viewModel.nowPlayingList.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
-            adapter.networkState = it
+            adapter.setNetworkState(it)
             when (it) {
                 is NetworkState.Error, NetworkState.Success -> {
                     if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false

@@ -1,48 +1,52 @@
 package com.awkris.watchamovie.data.model.response
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class CreditsResponse(
-    @SerializedName("id")
+    @Json(name = "id")
     val movieId: Int,
-    @SerializedName("cast")
+    @Json(name = "cast")
     val casts: List<Cast>,
-    @SerializedName("crew")
+    @Json(name = "crew")
     val crews: List<Crew>
 )
 
+@JsonClass(generateAdapter = true)
 data class Cast(
-    @SerializedName("cast_id")
+    @Json(name = "cast_id")
     val castId: Int,
-    @SerializedName("character")
+    @Json(name = "character")
     val character: String,
-    @SerializedName("credit_id")
+    @Json(name = "credit_id")
     val creditId: String,
-    @SerializedName("gender")
+    @Json(name = "gender")
     val gender: Int?,
-    @SerializedName("id")
+    @Json(name = "id")
     val id: Int,
-    @SerializedName("name")
+    @Json(name = "name")
     val name: String,
-    @SerializedName("order")
+    @Json(name = "order")
     val order: Int,
-    @SerializedName("profile_path")
+    @Json(name = "profile_path")
     val profilePath: String?
 )
 
+@JsonClass(generateAdapter = true)
 data class Crew(
-    @SerializedName("credit_id")
+    @Json(name = "credit_id")
     val creditId: String,
-    @SerializedName("department")
+    @Json(name = "department")
     val department: String,
-    @SerializedName("gender")
+    @Json(name = "gender")
     val gender: Int?,
-    @SerializedName("id")
+    @Json(name = "id")
     val id: Int,
-    @SerializedName("job")
+    @Json(name = "job")
     val job: String,
-    @SerializedName("name")
+    @Json(name = "name")
     val name: String,
-    @SerializedName("profile_path")
+    @Json(name = "profile_path")
     val profilePath: String?
 )
