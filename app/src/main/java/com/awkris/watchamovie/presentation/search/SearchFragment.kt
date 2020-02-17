@@ -15,7 +15,7 @@ import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
 import com.awkris.watchamovie.presentation.common.MovieListAdapter
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
 import com.awkris.watchamovie.presentation.search.lastkeyword.KeywordClickListener
-import com.awkris.watchamovie.presentation.search.lastkeyword.LastKeywordsAdapter
+import com.awkris.watchamovie.presentation.search.lastkeyword.KeywordsAdapter
 import com.awkris.watchamovie.utils.closeKeyboard
 import kotlinx.android.synthetic.main.fragment_refreshable_list.*
 import kotlinx.android.synthetic.main.fragment_search_movie.*
@@ -23,7 +23,7 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by sharedViewModel()
-    private val lastKeywordsAdapter = LastKeywordsAdapter().also {
+    private val keywordsAdapter = KeywordsAdapter().also {
         it.itemClickListener = object : KeywordClickListener {
             override fun onKeywordClicked(s: String) {
                 srv_movie.setQuery(s, true)
@@ -59,7 +59,7 @@ class SearchFragment : Fragment() {
 
         srv_movie.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                rcv_list.adapter = lastKeywordsAdapter
+                rcv_list.adapter = keywordsAdapter
             } else {
                 rcv_list.adapter = searchListAdapter
             }
@@ -117,7 +117,7 @@ class SearchFragment : Fragment() {
             }
         })
         viewModel.lastKeywords.observe(viewLifecycleOwner, Observer {
-            lastKeywordsAdapter.submitList(it)
+            keywordsAdapter.submitList(it)
         })
     }
 }

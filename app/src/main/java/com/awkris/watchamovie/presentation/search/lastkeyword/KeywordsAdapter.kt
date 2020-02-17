@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.awkris.watchamovie.R
-import kotlinx.android.synthetic.main.item_suggestion.view.*
 
-class LastKeywordsAdapter : RecyclerView.Adapter<LastKeywordsAdapter.KeywordViewHolder>() {
+class KeywordsAdapter : RecyclerView.Adapter<KeywordsAdapter.KeywordViewHolder>() {
     lateinit var itemClickListener: KeywordClickListener
     private var lastKeywords = mutableListOf<String>()
 

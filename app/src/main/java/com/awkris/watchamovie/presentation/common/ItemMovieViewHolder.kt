@@ -12,9 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import kotlinx.android.synthetic.main.item_movie.view.*
 
 class ItemMovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    lateinit var itemMovieClickListener: ItemMovieClickListener
-
-    fun bind(data: MovieResponse) {
+    fun bind(data: MovieResponse, itemMovieClickListener: ItemMovieClickListener) {
         data.backdropPath?.let {
             Glide.with(itemView.context)
                 .load(Constants.IMAGE_BASE_URL_500.format(it))
@@ -28,7 +26,7 @@ class ItemMovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.setOnClickListener { itemMovieClickListener.onItemClicked(data.id) }
     }
 
-    fun bind(data: Movie) {
+    fun bind(data: Movie, itemMovieClickListener: ItemMovieClickListener) {
         data.backdropPath?.let {
             Glide.with(itemView.context)
                 .load(Constants.IMAGE_BASE_URL_500.format(it))

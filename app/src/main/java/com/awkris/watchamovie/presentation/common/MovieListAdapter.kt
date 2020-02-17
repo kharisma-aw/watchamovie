@@ -29,19 +29,21 @@ class MovieListAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when(viewType) {
-            ItemType.LoadingProgress.ordinal -> LoadingItemViewHolder(
-                inflater.inflate(R.layout.item_loading, parent, false)
-            )
-            ItemType.ItemMovie.ordinal -> ItemMovieViewHolder(
-                inflater.inflate(R.layout.item_movie, parent, false)
-            ).also { it.itemMovieClickListener = itemMovieClickListener }
+            ItemType.LoadingProgress.ordinal -> {
+                LoadingItemViewHolder(inflater.inflate(R.layout.item_loading, parent, false))
+            }
+            ItemType.ItemMovie.ordinal -> {
+                ItemMovieViewHolder(inflater.inflate(R.layout.item_movie, parent, false))
+            }
             else -> throw UnsupportedOperationException("Unknown viewtype!")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder) {
-            is ItemMovieViewHolder -> holder.bind(requireNotNull(getItem(position)))
+            is ItemMovieViewHolder -> {
+                holder.bind(requireNotNull(getItem(position)), itemMovieClickListener)
+            }
             is LoadingItemViewHolder -> {}
         }
     }
