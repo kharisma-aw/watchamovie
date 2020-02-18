@@ -40,7 +40,7 @@ class MovieDetailViewModel : ViewModel(), KoinComponent {
     val networkState: LiveData<Event<NetworkState>>
         get() = _networkState
 
-    private val disposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
 
     lateinit var lifecycle: Lifecycle
 
@@ -52,15 +52,15 @@ class MovieDetailViewModel : ViewModel(), KoinComponent {
                 @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
                 fun destroyListener() {
                     Timber.d("ondestroy listener called")
-                    disposable.clear()
+                    compositeDisposable.clear()
                 }
             }
         )
     }
 
-//    fun clear() {
-//        if (!disposable.isDisposed) disposable.dispose()
-//    }
+    fun dispose() {
+        if (!compositeDisposable.isDisposed) compositeDisposable.dispose()
+    }
 
     fun deleteFromWatchlist(movieId: Int) {
         repository.deleteMovie(movieId)
@@ -74,7 +74,7 @@ class MovieDetailViewModel : ViewModel(), KoinComponent {
                     }
 
                     override fun onSubscribe(d: Disposable) {
-                        disposable.add(d)
+                        compositeDisposable.add(d)
                     }
 
                     override fun onError(e: Throwable) {
@@ -99,7 +99,7 @@ class MovieDetailViewModel : ViewModel(), KoinComponent {
                     }
 
                     override fun onSubscribe(d: Disposable) {
-                        disposable.add(d)
+                        compositeDisposable.add(d)
                     }
 
                     override fun onError(e: Throwable) {
@@ -121,7 +121,7 @@ class MovieDetailViewModel : ViewModel(), KoinComponent {
                     }
 
                     override fun onSubscribe(d: Disposable) {
-                        disposable.add(d)
+                        compositeDisposable.add(d)
                     }
 
                     override fun onError(e: Throwable) {
@@ -140,7 +140,7 @@ class MovieDetailViewModel : ViewModel(), KoinComponent {
             .subscribe(
                 object : SingleObserver<MovieDetailWithAdditionalInfo> {
                     override fun onSubscribe(d: Disposable) {
-                        disposable.add(d)
+                        compositeDisposable.add(d)
                     }
 
                     override fun onSuccess(item: MovieDetailWithAdditionalInfo) {
@@ -172,7 +172,7 @@ class MovieDetailViewModel : ViewModel(), KoinComponent {
                     }
 
                     override fun onSubscribe(d: Disposable) {
-                        disposable.add(d)
+                        compositeDisposable.add(d)
                     }
 
                     override fun onError(e: Throwable) {

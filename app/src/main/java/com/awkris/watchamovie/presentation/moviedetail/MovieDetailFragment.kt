@@ -59,6 +59,11 @@ class MovieDetailFragment : Fragment() {
         viewModel.onScreenCreated(movieId)
     }
 
+    override fun onDestroy() {
+        viewModel.dispose()
+        super.onDestroy()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu

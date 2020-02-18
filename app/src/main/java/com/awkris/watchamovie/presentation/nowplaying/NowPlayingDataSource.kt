@@ -7,6 +7,7 @@ import com.awkris.watchamovie.data.model.PaginatedList
 import com.awkris.watchamovie.data.model.response.MovieResponse
 import com.awkris.watchamovie.data.repository.MovieDbRepository
 import io.reactivex.SingleObserver
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import java.util.*
 
@@ -16,6 +17,7 @@ class NowPlayingDataSource(
 ) : PageKeyedDataSource<Int, MovieResponse>() {
     var networkState = MutableLiveData<NetworkState>()
         private set
+    private val compositeDisposable = CompositeDisposable()
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
@@ -34,6 +36,7 @@ class NowPlayingDataSource(
                 }
 
                 override fun onSubscribe(d: Disposable) {
+                    compositeDisposable.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -54,6 +57,7 @@ class NowPlayingDataSource(
                 }
 
                 override fun onSubscribe(d: Disposable) {
+                    compositeDisposable.add(d)
                 }
 
                 override fun onError(e: Throwable) {
@@ -65,5 +69,10 @@ class NowPlayingDataSource(
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieResponse>) {
+    }
+
+    override fun invalidate() {
+        if (!compositeDisposable.isDisposed) compositeDisposable.dispose()
+        super.invalidate()
     }
 }

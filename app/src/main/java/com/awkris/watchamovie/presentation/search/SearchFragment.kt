@@ -95,7 +95,7 @@ class SearchFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        viewModel.invalidate()
+        viewModel.dispose()
         super.onDestroy()
     }
 

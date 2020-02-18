@@ -12,6 +12,7 @@ import com.awkris.watchamovie.utils.storage.SessionSharedPreferences
 import io.reactivex.CompletableObserver
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -26,6 +27,8 @@ class SearchViewModel(
 
     val networkState: LiveData<NetworkState>
     val searchList: LiveData<PagedList<MovieResponse>>
+
+    val compositeDisposable = CompositeDisposable()
 
     private val pagedListConfig = PagedList.Config.Builder()
         .setEnablePlaceholders(true)
@@ -45,8 +48,9 @@ class SearchViewModel(
         dataSourceFactory.recreate(keyword)
     }
 
-    fun invalidate() {
+    fun dispose() {
         dataSourceFactory.invalidate()
+        if (!compositeDisposable.isDisposed) compositeDisposable.dispose()
     }
 
     fun saveKeyword(keyword: String) {
@@ -60,6 +64,7 @@ class SearchViewModel(
                     }
 
                     override fun onSubscribe(d: Disposable) {
+                        compositeDisposable.add(d)
                     }
 
                     override fun onError(e: Throwable) {
@@ -78,6 +83,7 @@ class SearchViewModel(
                     }
 
                     override fun onSubscribe(d: Disposable) {
+                        compositeDisposable.add(d)
                     }
 
                     override fun onNext(t: List<String>) {

@@ -84,3 +84,5 @@
     <init>();
 }
 
+-keep class com.awkris.watchamovie.utils.storage.** { *; }
+
