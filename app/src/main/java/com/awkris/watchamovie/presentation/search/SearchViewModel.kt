@@ -8,6 +8,8 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.data.model.response.MovieResponse
+import com.awkris.watchamovie.utils.decrypt
+import com.awkris.watchamovie.utils.encrypt
 import com.awkris.watchamovie.utils.storage.SessionSharedPreferences
 import io.reactivex.CompletableObserver
 import io.reactivex.Observer
@@ -15,12 +17,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.koin.core.KoinComponent
+import org.koin.core.get
 import timber.log.Timber
+import java.security.KeyStore
 
 class SearchViewModel(
     private val dataSourceFactory: SearchDataSourceFactory,
     private val sharedPref: SessionSharedPreferences
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
     private val _lastKeywords = MutableLiveData<List<String>>()
     val lastKeywords: LiveData<List<String>>
         get() = _lastKeywords
@@ -29,6 +34,8 @@ class SearchViewModel(
     val searchList: LiveData<PagedList<MovieResponse>>
 
     val compositeDisposable = CompositeDisposable()
+
+    private val key = get<KeyStore.PrivateKeyEntry>()
 
     private val pagedListConfig = PagedList.Config.Builder()
         .setEnablePlaceholders(true)
@@ -54,13 +61,15 @@ class SearchViewModel(
     }
 
     fun saveKeyword(keyword: String) {
+        val encrypted = encrypt(keyword.toByteArray(Charsets.UTF_8), key.privateKey)
+        val decrypted = decrypt(encrypted!!, key.certificate.publicKey)
+        Timber.d("encrypted string: %s\ndecrypted string: %s", String(encrypted, Charsets.UTF_8), String(decrypted!!, Charsets.UTF_8))
         sharedPref.addLastKeyword(keyword)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 object : CompletableObserver {
                     override fun onComplete() {
-                        Timber.d("Saving keyword completed")
                     }
 
                     override fun onSubscribe(d: Disposable) {

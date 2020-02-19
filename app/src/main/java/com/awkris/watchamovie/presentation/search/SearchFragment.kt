@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.*
 import com.awkris.watchamovie.R
 import com.awkris.watchamovie.data.model.NetworkState
 import com.awkris.watchamovie.presentation.common.ItemMovieClickListener
@@ -16,7 +17,9 @@ import com.awkris.watchamovie.presentation.common.MovieListAdapter
 import com.awkris.watchamovie.presentation.moviedetail.MovieDetailFragment
 import com.awkris.watchamovie.presentation.search.lastkeyword.KeywordClickListener
 import com.awkris.watchamovie.presentation.search.lastkeyword.KeywordsAdapter
+import com.awkris.watchamovie.utils.SampleWorker
 import com.awkris.watchamovie.utils.closeKeyboard
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_refreshable_list.*
 import kotlinx.android.synthetic.main.fragment_search_movie.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -73,6 +76,7 @@ class SearchFragment : Fragment() {
                     if (!query.isNullOrEmpty()) {
                         viewModel.search(query)
                         viewModel.saveKeyword(query)
+                        startAndObserveSampleWorker(query)
                     }
                     return true
                 }
@@ -119,5 +123,37 @@ class SearchFragment : Fragment() {
         viewModel.lastKeywords.observe(viewLifecycleOwner, Observer {
             keywordsAdapter.submitList(it)
         })
+    }
+
+    private fun startAndObserveSampleWorker(s: String) {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val data = Data.Builder().also {
+            it.putString(SampleWorker.ARG_EXTRA_PARAM, s)
+        }.build()
+
+        val workerTest = OneTimeWorkRequest.Builder(SampleWorker::class.java)
+            .setConstraints(constraints)
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(requireContext()).run {
+            enqueue(workerTest)
+            getWorkInfoByIdLiveData(workerTest.id)
+                .observe(viewLifecycleOwner, Observer { workInfo ->
+                    if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        val outputData = workInfo.outputData
+                        val first = outputData.getInt(SampleWorker.OUTPUT_DATA_PARAM1, 0)
+                        val second = outputData.getDouble(SampleWorker.OUTPUT_DATA_PARAM2, 0.0)
+                        Snackbar.make(
+                            requireView(),
+                            "Length modulo 5 = $first\n" + "Length power by 4 = $second",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                })
+        }
     }
 }

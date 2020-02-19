@@ -1,31 +1,27 @@
 package com.awkris.watchamovie.utils.storage
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import timber.log.Timber
 
 class SessionSharedPreferences(context: Context, moshi: Moshi) {
-    private val defaultList: String
-    private val jsonAdapter: JsonAdapter<LastKeyword>
-    private val sharedPreferences: SharedPreferences
-    private val sharedPrefChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
-    private val sharedPrefSubject: BehaviorSubject<SharedPreferences>
     private val storageName = "sessionstorage"
 
+    private val jsonAdapter = moshi.adapter(LastKeyword::class.java)
+    private val sharedPreferences = context.getSharedPreferences(storageName, Context.MODE_PRIVATE)
+
+    private val defaultList = jsonAdapter.toJson(LastKeyword(emptyList()))
+    private val sharedPrefSubject = BehaviorSubject.createDefault(sharedPreferences)
+
+    private val sharedPrefChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
+
     init {
-        jsonAdapter = moshi.adapter(LastKeyword::class.java)
-        defaultList = jsonAdapter.toJson(LastKeyword(emptyList()))
-        sharedPreferences = context.getSharedPreferences(storageName, Context.MODE_PRIVATE)
-        sharedPrefSubject = BehaviorSubject.createDefault(sharedPreferences)
-        sharedPrefChangeListener = SharedPreferences
-            .OnSharedPreferenceChangeListener { sharedPref, _ ->
+        sharedPrefChangeListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { sharedPref, _ ->
                 sharedPrefSubject.onNext(sharedPref)
             }
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
@@ -40,28 +36,29 @@ class SessionSharedPreferences(context: Context, moshi: Moshi) {
     }
 
     fun getLastKeywords(): Observable<List<String>> {
-        Timber.d("fetching last keyword")
         return sharedPrefSubject.map {
-            jsonAdapter.fromJson(it.getString(LAST_KEYWORD, defaultList)!!)!!.keywords
+            jsonAdapter.fromJson(requireNotNull(it.getString(LAST_KEYWORD, defaultList)))!!.keywords
+                .takeLast(LAST_KEYWORD_SIZE)
         }
     }
 
     fun addLastKeyword(keyword: String): Completable {
-        Timber.d("adding last keyword")
         val currentSavedKeywords = jsonAdapter.fromJson(
-            sharedPreferences.getString(LAST_KEYWORD, defaultList)!!
+            requireNotNull(sharedPreferences.getString(LAST_KEYWORD, defaultList))
         )!!.keywords
-        val newList = currentSavedKeywords.toMutableList()
-        if (newList.find { it == keyword } != null) {
-            newList.remove(keyword)
-        } else if (newList.size >= LAST_KEYWORD_SIZE){
-            newList.removeAt(0)
+
+        val newList = currentSavedKeywords.toMutableList().apply {
+            if (find { it == keyword } != null) remove(keyword)
+            add(keyword)
         }
-        newList.add(keyword)
+
         return sharedPrefSubject.firstOrError().flatMapCompletable {
             Completable.fromAction {
                 it.edit()
-                    .putString(LAST_KEYWORD, jsonAdapter.toJson(LastKeyword(newList)))
+                    .putString(
+                        LAST_KEYWORD,
+                        jsonAdapter.toJson(LastKeyword(newList.takeLast(LAST_KEYWORD_SIZE)))
+                    )
                     .apply()
             }
         }
